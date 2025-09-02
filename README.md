@@ -1,6 +1,8 @@
-# Nuxt Minimal Starter
+# Punchly Micro-SaaS
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The idea is to create a simple and effective Customer Loyalty Program as a Service for small business owners to keep customers engaged and coming for more.
+
+The goal with this service is to provide a simple UI/UX where requires minimum setup and reduces the barrier of usage to a minimum.
 
 ## Setup
 
