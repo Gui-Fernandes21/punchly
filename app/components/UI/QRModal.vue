@@ -1,4 +1,3 @@
 <template>
-
-  gelo
+  <section></section>
 </template>

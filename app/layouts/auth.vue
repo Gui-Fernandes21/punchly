@@ -22,14 +22,22 @@
 
 .layout-card {
   position: relative;
-  width: 90vw;
+  width: 30%;
   height: 80vh;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 16px;
 
-  box-shadow: 0px 0px 15px #078490;
+  box-shadow: 0px 0px 15px #0785906d;
+}
+
+@media (max-width: 768px) {
+  .layout-card {
+    width: 90vw;
+    height: 80vh;
+    padding: 12px;
+  }
 }
 
 </style>

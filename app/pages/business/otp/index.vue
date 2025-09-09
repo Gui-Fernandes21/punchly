@@ -1,19 +1,14 @@
 <script lang="ts" setup>
-import { vMaska } from 'maska/vue';
-
 definePageMeta({
   layout: 'auth'
 });
 
 useHead({
-  title: 'Login - Punchly',
-  meta: [
-    { name: 'description', content: 'Login to Punchly' }
-  ]
+  title: 'Verify Phone - Punchly',
+  meta: [{ name: 'description', content: 'Verify your phone number to continue using Punchly' }]
 });
 
-const mobile = ref('');
-
+const otp = ref('');
 </script>
 
 <template>
@@ -24,16 +19,20 @@ const mobile = ref('');
           <img src="/images/logo/punchly-logo.png" alt="Logo" />
         </div>
       </div>
-      <h1>Welcome To Punchly</h1>
-      <p>Enter your mobile number to turn one-time visitors into regulars!</p>
+      <h1>Verify Phone</h1>
+      <p>We have sent a 4-digit code to your mobile number.</p>
     </header>
 
     <form>
       <FloatLabel>
-        <InputText v-maska="'(###) ###-####'" size="large" id="mobile" v-model="mobile" type="tel" />
-        <label for="mobile">Mobile Number</label>
+        <InputOtp size="large" id="otp" v-model="otp" type="tel" />
+        <!-- <label for="otp">OTP</label> -->
       </FloatLabel>
-      <Button type="submit">Get Started</Button>
+      <span>
+        Didn't receive the code?
+        <a class="resend" href="#">resend</a>
+      </span>
+      <Button type="submit">Verify</Button>
     </form>
 
     <footer>
@@ -81,6 +80,11 @@ form {
   width: 100%;
 
   gap: 1rem;
+
+  & > span {
+    text-align: start;
+    width: 100%;
+  }
 }
 
 button {
@@ -89,6 +93,13 @@ button {
   padding: 1rem;
 }
 
+.resend {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
 
 ::v-deep(.p-floatlabel),
 ::v-deep(.p-inputtext) {
@@ -96,7 +107,7 @@ button {
 }
 
 ::v-deep(.p-inputtext) {
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   font-size: 1.2rem;
 }
 </style>
