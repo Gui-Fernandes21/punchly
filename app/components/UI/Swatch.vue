@@ -28,7 +28,6 @@ defineExpose({
 <style scoped>
 section {
   width: 100%;
-  margin: 2rem 0;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 1rem;

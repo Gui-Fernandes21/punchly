@@ -23,15 +23,22 @@ const reward = ref('');
     </header>
 
     <form>
+      <div class="form-group">
+        <span>Enter a Reward Label</span>
+        <InputText placeholder="e.g., “One Free Drink”" size="large" id="reward-label" v-model="reward" type="text" />
+      </div>
 
-      <FloatLabel>
-        <InputText size="large" id="reward-label" v-model="reward" type="text" />
-        <label for="reward-label">Reward Label</label>
-      </FloatLabel>
+      <div class="form-group">
+        <span>Set a Reward Goal</span>
+        <div class="reward-container">
+          <UIRewardCounter ref="rewardCounter" />
+        </div>
+      </div>
 
-      <UIRewardCounter ref="rewardCounter" />
-
-      <UISwatch ref="swatch" />
+      <div class="form-group">
+        <span>Select a Card Color</span>
+        <UISwatch ref="swatch" />
+      </div>
 
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
@@ -45,6 +52,34 @@ const reward = ref('');
 <style scoped>
 section.image {
   margin: 0 0 2.5rem;
+}
+
+.reward-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.form-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 5px;
+  margin: 0.4rem 0;
+
+  text-align: start;
+
+  & > span {
+    margin-left: 5px;
+    color: #717171;
+  }
 }
 
 .image-actions {
@@ -61,8 +96,8 @@ section.image {
   border-radius: 50%;
   border-style: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-  
-  margin: .5rem 0;
+
+  margin: 0.5rem 0;
   overflow: hidden;
 
   z-index: 4;
