@@ -31,6 +31,8 @@ const reward = ref('');
 
       <UIRewardCounter ref="rewardCounter" />
 
+      <UISwatch ref="swatch" />
+
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
 
