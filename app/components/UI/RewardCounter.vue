@@ -1,0 +1,66 @@
+<script lang="ts" setup>
+import { ref } from 'vue';
+
+const counter = ref(0);
+
+const handleIncrement = () => {
+  counter.value++;
+};
+
+const handleDecrement = () => {
+  if (counter.value > 0) {
+    counter.value--;
+  }
+};
+
+defineExpose({
+  counter,
+  handleIncrement,
+  handleDecrement 
+});
+</script>
+
+<template>
+  <section>
+    <div class="sub-action" @click="handleDecrement">-</div>
+    <div class="counter">{{ counter }}</div>
+    <div class="add-action" @click="handleIncrement">+</div>
+  </section>
+</template>
+
+<style scoped>
+section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.counter {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+
+  padding: 0.5rem 1rem;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.sub-action,
+.add-action {
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.5rem;
+  user-select: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: #14ABB7;
+  transition: background-color 0.3s;
+}
+
+.sub-action:hover,
+.add-action:hover {
+  background-color: #17c4d0;
+}
+</style>

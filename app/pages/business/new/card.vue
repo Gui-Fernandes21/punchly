@@ -12,7 +12,7 @@ const reward = ref('');
 </script>
 
 <template>
-  <section>
+  <section class="card-content">
     <header>
       <div class="placeholder">
         <div class="logo">
@@ -28,6 +28,8 @@ const reward = ref('');
         <InputText size="large" id="reward-label" v-model="reward" type="text" />
         <label for="reward-label">Reward Label</label>
       </FloatLabel>
+
+      <UIRewardCounter ref="rewardCounter" />
 
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
@@ -91,7 +93,7 @@ section.image {
     width: 11rem;
   }
 }
-section {
+.card-content {
   width: 100%;
   height: 100%;
 
