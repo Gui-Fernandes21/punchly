@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 useHead({
-  title: 'Dashboard - Punchly',
-  meta: [{ name: 'description', content: 'Your business operations dashboard on Punchly' }]
+  title: 'Print Store QR Code - Punchly',
+  meta: [{ name: 'description', content: 'Print the QR code for your store on Punchly' }]
 });
 </script>
 
