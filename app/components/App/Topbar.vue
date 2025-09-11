@@ -31,17 +31,18 @@ const toast = useToast();
 //   return restaurant.value.logo;
 // });
 
-// const avatar = computed(() => {
-//   const path = '/layout/images/';
+const avatar = computed(() => {
+  const path = '/layout/images/';
 
-//   let avatar;
-//   if (user.value?.photo_url) {
-//     avatar = user.value?.photo_url;
-//   } else {
-//     avatar = path + 'menutz-logo.png';
-//   }
-//   return avatar;
-// });
+  // let avatar;
+  // if (user.value?.photo_url) {
+  //   avatar = user.value?.photo_url;
+  // } else {
+  //   avatar = path + 'menutz-logo.png';
+  // }
+
+  return path + 'menutz-logo.png';
+});
 
 // const username = computed(() => {
 //   return user.value?.display_name ? user.value.display_name : 'Unknown User';
@@ -119,7 +120,8 @@ const closeProfileDrawer = () => {
     </Drawer>
 
     <div class="topbar-profile">
-      <button type="button" 
+      <img class="topbar-profile-button"  src="/images/logo/punchly-logo.png" alt="">
+      <!-- <button type="button" 
         class="topbar-profile-button" 
         @click="showProfileDrawer = true" 
         v-styleclass="{ 
@@ -138,7 +140,7 @@ const closeProfileDrawer = () => {
           </span>
           <i class="pi pi-angle-down"></i>
         </ClientOnly>
-      </button>    
+      </button>     -->
     </div>
   </div>
 </template>
@@ -159,5 +161,14 @@ const closeProfileDrawer = () => {
   border-style: solid;
 
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+.topbar-profile {
+  background: #fff;
+  border-radius: 50%;
+  width: 5rem;
+}
+.topbar-profile-button {
+  width: 100%;
+  padding: 0 !important;
 }
 </style>

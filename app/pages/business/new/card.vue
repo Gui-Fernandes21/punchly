@@ -36,7 +36,7 @@ const reward = ref('');
       </div>
 
       <div class="form-group">
-        <span>Select a Card Color</span>
+        <span>Select your primary color</span>
         <UISwatch ref="swatch" />
       </div>
 
