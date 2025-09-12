@@ -1,43 +1,31 @@
+<script lang="ts" setup>
+const visible = ref(true);
+
+const message = ref<{ header: string; message: string }>({ header: 'Error', message: 'Something went wrong' });
+</script>
+
 <template>
-  <ConfirmDialog group="headless">
-    <template #container="{ message, acceptCallback, rejectCallback }">
+  <Dialog v-model:visible="visible" pt:root:class="!border-0 !w-[80%]" pt:mask:class="backdrop-blur-md">
+    <template #container="{ closeCallback }">
       <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
-        <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
-          <i class="pi pi-question !text-4xl"></i>
+        <div class="rounded-full bg-alternative text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+          <i class="pi pi-exclamation-triangle !text-4xl"></i>
         </div>
         <span class="font-bold text-2xl block mb-2 mt-6">{{ message.header }}</span>
         <p class="mb-0">{{ message.message }}</p>
-        <div class="flex items-center gap-2 mt-6">
-          <Button label="Save" @click="acceptCallback"></Button>
-          <Button label="Cancel" variant="outlined" @click="rejectCallback"></Button>
+        <div class="flex w-full gap-2 mt-6">
+          <Button class="w-full" label="Close" @click="closeCallback"></Button>
         </div>
       </div>
     </template>
-  </ConfirmDialog>
-  <div class="card flex justify-center">
-    <Button @click="requireConfirmation()" label="Save"></Button>
-  </div>
-  <Toast />
+  </Dialog>
 </template>
 
-<script setup>
-import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
-
-const confirm = useConfirm();
-const toast = useToast();
-
-const requireConfirmation = () => {
-  confirm.require({
-    group: 'headless',
-    header: 'Are you sure?',
-    message: 'Please confirm to proceed.',
-    accept: () => {
-      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
-    },
-    reject: () => {
-      toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-    }
-  });
-};
-</script>
+<style scoped>
+.bg-alternative,
+button {
+  background-color: #F5853F;
+  border: 1px solid #F5853F;
+  color: #fff;
+}
+</style>

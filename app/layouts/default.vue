@@ -36,8 +36,8 @@ const containerClass = computed(() => {
     <div class="layout-content-wrapper">
       <div class="layout-content">
         <div class="layout-content-inner">
-          <!-- <AppBreadcrumb></AppBreadcrumb> -->
           <NuxtPage></NuxtPage>
+          <ModalError></ModalError>
           <AppFooter when-visible></AppFooter>
         </div>
       </div>
