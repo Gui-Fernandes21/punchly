@@ -8,7 +8,10 @@ useHead({
 <template>
   <section>
     <div class="scanner-container">
-      <header>Store QR</header>
+      <header>
+        <h1>Store QR</h1>
+        <p>Print or download the QR code for your store to display at your location.</p>
+      </header>
       <div class="qr-card">
         <img src="/images/qr-demo.png" alt="Store QR Code" class="mx-auto mb-4" />
 
@@ -34,10 +37,15 @@ section {
   flex-direction: column;
   gap: 1rem;
 }
-header {
+header > h1 {
   font-size: 24px;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
+}
+header > p {
+  font-size: 14px;
+  color: #717171;
+  font-family: 'Open Sans', sans-serif;
 }
 .icon {
   position: absolute;

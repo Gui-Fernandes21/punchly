@@ -63,10 +63,10 @@ useHead({
           <Icon name="material-symbols:edit-outline-rounded" size="2rem" />
           Customize Loyalty Card
         </div>
-        <div class="link">
+        <NuxtLink to="/business/support" class="link">
           <Icon name="material-symbols:contact-support-outline" size="2rem" />
           Contact Support
-        </div>
+        </NuxtLink>
       </div>
     </div>
   </section>

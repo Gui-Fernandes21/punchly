@@ -37,7 +37,7 @@ const containerClass = computed(() => {
       <div class="layout-content">
         <div class="layout-content-inner">
           <NuxtPage></NuxtPage>
-          <ModalError></ModalError>
+          <ModalError :model-value="false"></ModalError>
           <AppFooter when-visible></AppFooter>
         </div>
       </div>
