@@ -1,17 +1,10 @@
 <script setup>
 import { computed, ref } from 'vue';
 
-const { 
-  onMenuToggle, 
-  layoutConfig, 
-  tabs, 
-  closeTab, 
-  isDarkTheme 
-} = useLayout();
+const { onMenuToggle, layoutConfig, tabs, closeTab, isDarkTheme } = useLayout();
 
+const route = useRoute();
 
-// const { user } = useUser();
-const toast = useToast();
 // const router = useRouter();
 
 // const { restaurant } = useRestaurant();
@@ -71,8 +64,7 @@ const handleProfile = () => {
 const showProfileDrawer = ref(false);
 const closeProfileDrawer = () => {
   showProfileDrawer.value = false;
-}
-
+};
 </script>
 
 <template>
@@ -82,7 +74,7 @@ const closeProfileDrawer = () => {
         <span class="font-playwrite text-white text-3xl inline-flex py-3">Menutz</span>
       </h4>
     </NuxtLink>
-    
+
     <button ref="menubutton" class="topbar-menubutton" type="button" @click="onMenuToggle">
       <span></span>
     </button>
@@ -99,28 +91,32 @@ const closeProfileDrawer = () => {
     </ul>
 
     <Drawer v-model:visible="showProfileDrawer" position="right" class="!w-full md:!w-80 lg:!w-[30rem]">
-        <template #header>
-          <Avatar :image="avatar" shape="circle" class="size-28"/>
-          <div class="flex flex-col items-center gap-1">
-              <!-- <span class="font-readex font-extralight text-3xl">{{ username }}</span>
+      <template #header>
+        <Avatar :image="avatar" shape="circle" class="size-28" />
+        <div class="flex flex-col items-center gap-1">
+          <!-- <span class="font-readex font-extralight text-3xl">{{ username }}</span>
               <span class="font-readex font-extralight text-md">{{ userEmail }}</span> -->
-          </div>
-        </template>
-        <template #default>
-          <p class="font-raleway font-semibold text-lg">About</p>
-          <!-- <p class="p-4">{{ userBio }}</p> -->
-        </template>
-        <template #footer>
-            <div class="flex items-center gap-2">
-              <NuxtLink to="/settings/profile" class="flex p-2 rounded-border items-center hover:bg-emphasis transition-colors duration-150 cursor-pointer">
-                <Button label="Profile Settings" icon="pi pi-cog" class="flex-auto" @click="closeProfileDrawer"></Button>
-              </NuxtLink>
-            </div>
-        </template>
+        </div>
+      </template>
+      <template #default>
+        <p class="font-raleway font-semibold text-lg">About</p>
+        <!-- <p class="p-4">{{ userBio }}</p> -->
+      </template>
+      <template #footer>
+        <div class="flex items-center gap-2">
+          <NuxtLink to="/settings/profile" class="flex p-2 rounded-border items-center hover:bg-emphasis transition-colors duration-150 cursor-pointer">
+            <Button label="Profile Settings" icon="pi pi-cog" class="flex-auto" @click="closeProfileDrawer"></Button>
+          </NuxtLink>
+        </div>
+      </template>
     </Drawer>
 
-    <div class="topbar-profile">
-      <img class="topbar-profile-button"  src="/images/logo/punchly-logo.png" alt="">
+    <div class="navigation-container" v-if="!route.path.includes('/dashboard')">
+      <NuxtLink to="/business/dashboard" class="navigation-link"> <i class="pi pi-chevron-left"></i> back </NuxtLink>
+    </div>
+
+    <div class="topbar-profile" v-if="route.path.includes('/dashboard')">
+      <img class="topbar-profile-button" src="/images/logo/punchly-logo.png" alt="" />
       <!-- <button type="button" 
         class="topbar-profile-button" 
         @click="showProfileDrawer = true" 
@@ -146,6 +142,28 @@ const closeProfileDrawer = () => {
 </template>
 
 <style scoped>
+.layout-topbar {
+  padding: 0 1rem;
+}
+.navigation-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.navigation-link{
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: white;
+  background: #078590;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+
+  font-size: 1.1rem;
+}
 .restaurant-logo {
   position: absolute;
   left: calc(50% - 3.5rem);
@@ -157,7 +175,7 @@ const closeProfileDrawer = () => {
   margin-right: 10px;
 
   border-color: rgb(240, 240, 240);
-  border-width: .16rem;
+  border-width: 0.16rem;
   border-style: solid;
 
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
@@ -166,6 +184,7 @@ const closeProfileDrawer = () => {
   background: #fff;
   border-radius: 50%;
   width: 5rem;
+  margin: 1rem;
 }
 .topbar-profile-button {
   width: 100%;

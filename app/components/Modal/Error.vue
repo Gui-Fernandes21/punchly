@@ -1,7 +1,15 @@
 <script lang="ts" setup>
-const visible = ref(true);
+const props = defineProps<{
+  modelValue: boolean;
+  messageData?: { header: string; message: string };
+}>();
 
-const message = ref<{ header: string; message: string }>({ header: 'Error', message: 'Something went wrong' });
+const visible = ref(props.modelValue);
+
+const message = ref<{ header: string; message: string }>({
+  header: props.messageData?.header || 'Error',
+  message: props.messageData?.message || 'Something went wrong'
+});
 </script>
 
 <template>
@@ -24,8 +32,8 @@ const message = ref<{ header: string; message: string }>({ header: 'Error', mess
 <style scoped>
 .bg-alternative,
 button {
-  background-color: #F5853F;
-  border: 1px solid #F5853F;
+  background-color: #f5853f;
+  border: 1px solid #f5853f;
   color: #fff;
 }
 </style>

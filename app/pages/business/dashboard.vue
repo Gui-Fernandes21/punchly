@@ -55,10 +55,10 @@ useHead({
     <div class="manage-container">
       <header>Manage Program</header>
       <div class="options-container">
-        <div class="link">
+        <NuxtLink to="/business/printqr" class="link">
           <Icon name="material-symbols:download-rounded" size="2rem" />
           Print Store QR Code
-        </div>
+        </NuxtLink>
         <div class="link">
           <Icon name="material-symbols:edit-outline-rounded" size="2rem" />
           Customize Loyalty Card
