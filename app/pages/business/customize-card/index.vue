@@ -41,6 +41,14 @@ const onFormSubmit = ({ valid }: { valid: boolean }) => {
       <Form v-slot="$form" class="form flex flex-col gap-4" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit">
         <div class="form-group">
           <header>
+            <h2>Preview Loyalty Card</h2>
+          </header>
+          <Divider class="my-2" />
+          <UIWallet />
+        </div>
+        
+        <div class="form-group">
+          <header>
             <h2>Reward Description</h2>
           </header>
           <FloatLabel class="flex flex-col gap-1" variant="in">

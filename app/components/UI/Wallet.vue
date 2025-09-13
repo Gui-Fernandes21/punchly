@@ -1,25 +1,34 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const selectedColor = ref('');
-
-const availableColors = ['#4A90E2', '#00A3AD', '#34C759', '#000000', '#6E84A3', '#2F3136', '#F5A623', '#E53935', '#D00280', '#795548', '#8E8E93', '#E5E5EA', '#D87D4A', '#4A00E0', '#0A2540', '#2E7D32', '#14ABB7', '#BB62FF'];
-
-const handleColorSelect = (color: string) => {
-  selectedColor.value = color;
-};
-
-defineExpose({
-  selectedColor,
-  handleColorSelect
+const walletData = ref({
+  businessName: 'Your Business',
+  rewardLabel: 'One Free Drink',
+  rewardCount: 5,
+  totalRewards: 10,
+  cardColor: '#14ABB7'
 });
+
+defineExpose({});
 </script>
 
 <template>
   <section>
-    <div class="swatch-grid">
-      <div v-for="color in availableColors" :key="color" class="swatch" :style="{ backgroundColor: color }" @click="handleColorSelect(color)">
-        <div v-if="selectedColor === color" class="checkmark">✓</div>
+    <div class="wallet" :style="{ borderColor: walletData.cardColor }">
+      <header class="wallet-header" :style="{ backgroundColor: walletData.cardColor }">
+        <h2>{{ walletData.businessName }}</h2>
+      </header>
+      <div class="content">
+        <div class="wallet-grid">
+          <div v-for="(n, index) in walletData.totalRewards" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.rewardCount ? walletData.cardColor : '#e0e0e0' }">
+            <Icon v-if="n == walletData.totalRewards" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
+          </div>
+        </div>
+
+        <p>
+          Only <strong>{{ walletData.totalRewards - walletData.rewardCount }}</strong> more punches needed for (a) <br />
+          "<strong>{{ walletData.rewardLabel }}</strong>"!
+        </p>
       </div>
     </div>
   </section>
@@ -32,29 +41,49 @@ section {
   border-radius: 6px;
   padding: 1rem;
 }
-.swatch-grid {
+
+.content {
+  margin: 1rem 0;
+}
+
+.content > p {
+  text-align: center;
+  margin: 1rem 0 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.wallet-header {
+  padding: 1rem;
+  border-radius: 6px 6px 0 0;
+  color: #fff;
+  text-align: center;
+}
+
+.wallet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-  gap: 0.5rem;
-  width: 100%;
+  grid-template-columns: repeat(3, 5rem);
+  row-gap: 10px;
   place-items: center;
+  justify-content: center;
 }
 
-.swatch {
-  width: 2rem;
-  height: 2rem;
+.punch {
+  width: 4rem;
+  height: 4rem;
   position: relative;
-  border-radius: 4px;
+  border-radius: 50%;
   cursor: pointer;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 }
 
-.checkmark {
+.reward-icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  color: white;
+  color: var(--bg-surface-900);
+  opacity: 0.8;
 }
-
 </style>
