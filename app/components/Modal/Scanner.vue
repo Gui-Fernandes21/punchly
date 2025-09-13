@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
+  (e: 'scan:success', data: any): void;
 }>();
 
 const props = defineProps<{
@@ -22,6 +22,10 @@ watch(visible, (newVal) => {
     emit('update:modelValue', newVal);
   }
 });
+
+const handleScanSuccess = (data: any) => {
+  emit('scan:success', data);
+};
 </script>
 
 <template>
@@ -33,11 +37,11 @@ watch(visible, (newVal) => {
         </header>
 
         <div class="scanner-canvas font-bold text-2xl block mb-2 mt-6">
-          <img class="scan-guide" src="/svg/scanner-borders.svg" alt="Borders of the Scanner">
+          <img @click="handleScanSuccess" class="scan-guide" src="/svg/scanner-borders.svg" alt="Borders of the Scanner" />
         </div>
-        
+
         <p class="my-6">Scan Customer's QR Code</p>
-        
+
         <div class="flex w-full gap-2">
           <Button class="w-full" label="Close" @click="closeCallback"></Button>
         </div>
@@ -52,6 +56,9 @@ button {
   background-color: #f5853f;
   border: 1px solid #f5853f;
   color: #fff;
+
+  font-size: 1.1rem;
+  padding: 1rem;
 }
 .scanner-canvas {
   width: 100%;
@@ -66,5 +73,4 @@ button {
   display: grid;
   place-items: center;
 }
-
 </style>

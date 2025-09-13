@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+const props = defineProps<{
+  mode: 'full' | 'compact';
+}>();
+
 interface WalletData {
   businessName: string;
   rewardLabel: string;
@@ -22,7 +26,7 @@ defineExpose({});
 
 <template>
   <section class="wallet" :style="{ borderColor: walletData.cardColor }">
-    <header class="wallet-header" :style="{ backgroundColor: walletData.cardColor }">
+    <header v-if="props.mode === 'full'" class="wallet-header" :style="{ backgroundColor: walletData.cardColor }" >
       <h2>{{ walletData.businessName }}</h2>
     </header>
     <div class="content">
@@ -32,7 +36,7 @@ defineExpose({});
         </div>
       </div>
 
-      <p>
+      <p v-if="props.mode === 'full'">
         Only <strong>{{ walletData.totalRewards - walletData.rewardCount }}</strong> more punches needed for (a) <br />
         "<strong>{{ walletData.rewardLabel }}</strong>"!
       </p>

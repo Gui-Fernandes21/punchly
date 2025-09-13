@@ -6,8 +6,16 @@ useHead({
 
 const scannerOpen = ref(false);
 
+const modalCustomerCardOpen = ref(false);
+
 const handleOpenScanner = () => {
   scannerOpen.value = !scannerOpen.value;
+};
+
+const handleScanSuccess = (data: any) => {
+  console.log('Scan successful:', data);
+  scannerOpen.value = false;
+  modalCustomerCardOpen.value = true;
 };
 </script>
 
@@ -19,7 +27,8 @@ const handleOpenScanner = () => {
         <Icon class="icon" name="material-symbols:qr-code-scanner-rounded" size="4rem"  />
         Open Scanner
       </div>
-      <ModalScanner v-model="scannerOpen" />
+      <ModalScanner v-model="scannerOpen" @scan:success="handleScanSuccess" />
+      <ModalCustomerWallet v-model="modalCustomerCardOpen" />
     </div>
 
     <Divider class="my-6" />
@@ -63,15 +72,15 @@ const handleOpenScanner = () => {
       <header>Manage Program</header>
       <div class="options-container">
         <NuxtLink to="/business/printqr" class="link">
-          <Icon name="material-symbols:download-rounded" size="2rem" />
+          <Icon name="material-symbols:download-rounded" size="1.5rem" />
           Print Store QR Code
         </NuxtLink>
         <NuxtLink to="/business/customize-card" class="link">
-          <Icon name="material-symbols:edit-outline-rounded" size="2rem" />
+          <Icon name="material-symbols:edit-outline-rounded" size="1.5rem" />
           Customize Loyalty Card
         </NuxtLink>
         <NuxtLink to="/business/support" class="link">
-          <Icon name="material-symbols:contact-support-outline" size="2rem" />
+          <Icon name="material-symbols:contact-support-outline" size="1.5rem" />
           Contact Support
         </NuxtLink>
       </div>
@@ -167,6 +176,8 @@ section {
     margin: 10px;
     border: 1px solid #f0f0f0;
     border-radius: 5px;
+
+    font-size: 1rem;
     color: var(--text-color);
 
     cursor: pointer;

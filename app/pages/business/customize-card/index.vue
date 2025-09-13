@@ -44,7 +44,7 @@ const onFormSubmit = ({ valid }: { valid: boolean }) => {
             <h2>Preview Loyalty Card</h2>
           </header>
           <Divider class="my-2" />
-          <UIWallet />
+          <UIWallet mode="full" />
         </div>
         
         <div class="form-group">
