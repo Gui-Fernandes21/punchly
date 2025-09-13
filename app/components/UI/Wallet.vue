@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const walletData = ref({
+interface WalletData {
+  businessName: string;
+  rewardLabel: string;
+  rewardCount: number;
+  totalRewards: number;
+  cardColor: string;
+}
+
+const walletData = ref<WalletData>({
   businessName: 'Your Business',
   rewardLabel: 'One Free Drink',
   rewardCount: 5,
@@ -13,33 +21,31 @@ defineExpose({});
 </script>
 
 <template>
-  <section>
-    <div class="wallet" :style="{ borderColor: walletData.cardColor }">
-      <header class="wallet-header" :style="{ backgroundColor: walletData.cardColor }">
-        <h2>{{ walletData.businessName }}</h2>
-      </header>
-      <div class="content">
-        <div class="wallet-grid">
-          <div v-for="(n, index) in walletData.totalRewards" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.rewardCount ? walletData.cardColor : '#e0e0e0' }">
-            <Icon v-if="n == walletData.totalRewards" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
-          </div>
+  <section class="wallet" :style="{ borderColor: walletData.cardColor }">
+    <header class="wallet-header" :style="{ backgroundColor: walletData.cardColor }">
+      <h2>{{ walletData.businessName }}</h2>
+    </header>
+    <div class="content">
+      <div class="wallet-grid">
+        <div v-for="(n, index) in walletData.totalRewards" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.rewardCount ? walletData.cardColor : '#e0e0e0' }">
+          <Icon v-if="n == walletData.totalRewards" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
         </div>
-
-        <p>
-          Only <strong>{{ walletData.totalRewards - walletData.rewardCount }}</strong> more punches needed for (a) <br />
-          "<strong>{{ walletData.rewardLabel }}</strong>"!
-        </p>
       </div>
+
+      <p>
+        Only <strong>{{ walletData.totalRewards - walletData.rewardCount }}</strong> more punches needed for (a) <br />
+        "<strong>{{ walletData.rewardLabel }}</strong>"!
+      </p>
     </div>
   </section>
 </template>
 
 <style scoped>
-section {
+section.wallet {
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0 ;
 }
 
 .content {
