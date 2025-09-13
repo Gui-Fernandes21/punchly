@@ -3,16 +3,23 @@ useHead({
   title: 'Dashboard - Punchly',
   meta: [{ name: 'description', content: 'Your business operations dashboard on Punchly' }]
 });
+
+const scannerOpen = ref(false);
+
+const handleOpenScanner = () => {
+  scannerOpen.value = !scannerOpen.value;
+};
 </script>
 
 <template>
   <section>
     <div class="scanner-container">
       <header>Scan Loyalty Card</header>
-      <div class="scanner">
-        <Icon class="icon" name="material-symbols:qr-code-scanner-rounded" size="4rem" />
-        Open Scan
+      <div class="scanner" @click="handleOpenScanner">
+        <Icon class="icon" name="material-symbols:qr-code-scanner-rounded" size="4rem"  />
+        Open Scanner
       </div>
+      <ModalScanner v-model="scannerOpen" />
     </div>
 
     <Divider class="my-6" />
