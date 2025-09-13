@@ -21,7 +21,7 @@ defineExpose({
 </script>
 
 <template>
-  <section>
+  <section class="counter-container">
     <div class="sub-action" @click="handleDecrement">-</div>
     <div class="counter">{{ counter }}</div>
     <div class="add-action" @click="handleIncrement">+</div>
@@ -29,9 +29,11 @@ defineExpose({
 </template>
 
 <style scoped>
-section {
+.counter-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
 }
 

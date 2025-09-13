@@ -59,10 +59,10 @@ useHead({
           <Icon name="material-symbols:download-rounded" size="2rem" />
           Print Store QR Code
         </NuxtLink>
-        <div class="link">
+        <NuxtLink to="/business/customize-card" class="link">
           <Icon name="material-symbols:edit-outline-rounded" size="2rem" />
           Customize Loyalty Card
-        </div>
+        </NuxtLink>
         <NuxtLink to="/business/support" class="link">
           <Icon name="material-symbols:contact-support-outline" size="2rem" />
           Contact Support
