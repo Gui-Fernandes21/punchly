@@ -8,6 +8,14 @@ export default defineNuxtConfig({
     importTheme: { from: '~/theme' }
   },
   supabase: {
-    redirect: false
-  }
+    redirect: false,
+    redirectOptions: {
+      login: '/business/login',
+      callback: '/business/dashboard'
+    },
+    url: process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY
+  },
+  runtimeConfig: {}
 });

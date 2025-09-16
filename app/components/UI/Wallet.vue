@@ -14,7 +14,7 @@ interface WalletData {
 }
 
 const walletData = ref<WalletData>({
-  businessName: 'Your Business',
+  businessName: 'Foxtail Coffee Rewards',
   rewardLabel: 'One Free Drink',
   rewardCount: 5,
   totalRewards: 10,
@@ -54,6 +54,8 @@ section.wallet {
 
 .content {
   margin: 1rem 0;
+  display: grid;
+  place-items: center;
 }
 
 .content > p {
@@ -69,6 +71,12 @@ section.wallet {
   border-radius: 6px 6px 0 0;
   color: #fff;
   text-align: center;
+
+  & > h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
 }
 
 .wallet-grid {

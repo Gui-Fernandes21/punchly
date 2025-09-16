@@ -65,6 +65,17 @@ const showProfileDrawer = ref(false);
 const closeProfileDrawer = () => {
   showProfileDrawer.value = false;
 };
+
+const handleLogout = async () => {
+  const supabase = useSupabaseClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Error signing out:', error.message);
+  } else {
+    const router = useRouter();
+    router.push('/business/login');
+  }
+};
 </script>
 
 <template>
@@ -115,8 +126,9 @@ const closeProfileDrawer = () => {
       <NuxtLink to="/business/dashboard" class="navigation-link"> <i class="pi pi-chevron-left"></i> back </NuxtLink>
     </div>
 
-    <div class="topbar-profile" v-if="route.path.includes('/dashboard')">
+    <div @click="handleLogout" class="topbar-profile" v-if="route.path.includes('/dashboard')">
       <img class="topbar-profile-button" src="/images/logo/punchly-logo.png" alt="" />
+      
       <!-- <button type="button" 
         class="topbar-profile-button" 
         @click="showProfileDrawer = true" 

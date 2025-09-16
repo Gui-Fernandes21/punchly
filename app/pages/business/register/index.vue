@@ -8,8 +8,8 @@ definePageMeta({
 });
 
 useHead({
-  title: 'Login - Punchly',
-  meta: [{ name: 'description', content: 'Login to Punchly' }]
+  title: 'Register - Punchly',
+  meta: [{ name: 'description', content: 'Register for Punchly' }]
 });
 
 const email = ref('');
@@ -20,26 +20,23 @@ const handleSubmit = async () => {
   console.log('Email:', email.value);
   console.log('Password:', password.value);
 
-  const supabase = useSupabaseClient();
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
+  const result = await useFetch('/api/auth/register', {
+    method: 'POST',
+    body: {
+      email: email.value,
+      password: password.value
+    }
   });
 
-  if (error) {
-    console.error('Error:', error.message);
-    showError({ header: "Error", message: error.message || 'An error occurred during login.' });
+  if (result.error.value) {
+    console.error('Error:', result.error.value);
+    showError({ header: 'Error', message: result.error.value.data?.message || 'An error occurred during registration.' });
     return;
   } else {
-    console.log('Success:', data);
+    console.log('Success:', result.data.value);
     const router = useRouter();
     router.push('/business/dashboard');
   }
-
-  // Reset form fields
-  email.value = '';
-  password.value = '';
 };
 </script>
 
@@ -51,8 +48,8 @@ const handleSubmit = async () => {
           <img src="/images/logo/punchly-logo.png" alt="Logo" />
         </div>
       </div>
-      <h1>Welcome Back</h1>
-      <p>Enter your email and password to continue where you left off!</p>
+      <h1>Welcome To Punchly</h1>
+      <p>Enter your email and password to turn one-time visitors into regulars!</p>
     </header>
 
     <form @submit.prevent="handleSubmit">
@@ -68,9 +65,6 @@ const handleSubmit = async () => {
     </form>
 
     <AppFooter class="footer" />
-    <!-- <footer>
-      <p>&copy; 2025 Punchly. All rights reserved.</p>
-    </footer> -->
   </section>
 </template>
 

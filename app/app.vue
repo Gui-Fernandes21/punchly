@@ -5,6 +5,7 @@
   <NuxtLayout>
     <!-- <NuxtPage></NuxtPage> -->
   </NuxtLayout>
+  <ModalError />
 </template>
 
 <style>
@@ -17,5 +18,4 @@ button {
 * {
   font-family: 'Open Sans', sans-serif;
 }
-
 </style>
