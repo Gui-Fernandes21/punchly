@@ -20,7 +20,7 @@ const handleSubmit = async () => {
   console.log('Email:', email.value);
   console.log('Password:', password.value);
 
-  const supabase = useSupabaseClient();
+  const supabase = useSupabaseClient<Database>();
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email.value,
