@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useErrorModal } from '~/composables/ui/useErrorModal';
+
 definePageMeta({
   layout: 'card'
 });
@@ -10,12 +12,82 @@ useHead({
 
 const business = useState<Tables<'business'> | null>('business_data');
 
-const rewardLabel = ref('');
-const rewardCounter = ref<number>(business.value?.reward_goal || 0);
+const errorModal = useErrorModal();
+const toast = useToast();
+const router = useRouter();
+
+const rewardLabel = ref(business.value?.reward_label || '');
+const rewardCounter = ref<number>(business.value?.reward_goal || 1);
 const swatch = ref<string>(business.value?.primary_color || '');
 
+const checkSubmission = (): boolean => {
+  let error = false;
+  if (rewardLabel.value.trim() === '') error = true;
+  if (rewardCounter.value <= 0) error = true;
+  if (swatch.value.trim() === '') error = true;
+  return !error;
+};
 
+const handleSubmit = async () => {
+  if (!checkSubmission()) {
+    console.error('Form submission error:', {
+      rewardLabel: rewardLabel.value,
+      rewardCounter: rewardCounter.value,
+      swatch: swatch.value
+    });
+    errorModal.showError({
+      header: 'Submission Error',
+      message: 'Please ensure all fields are filled out correctly before submitting.'
+    });
+    return;
+  }
 
+  if (!business.value) {
+    errorModal.showError({
+      header: 'Business Data Error',
+      message: 'Business data is not available. Please try again later.'
+    });
+    return;
+  }
+
+  const client = useSupabaseClient<Database>();
+
+  const { error } = await client
+  .from('business')
+  .update({
+    reward_label: rewardLabel.value,
+    reward_goal: rewardCounter.value,
+    primary_color: swatch.value
+  })
+  .eq('id', business.value.id)
+  .select()
+  .single();
+  
+  if (error) {
+    console.error('Database update error:', error);
+    errorModal.showError({
+      header: 'Database Update Error',
+      message: 'There was an error updating the business data. Please try again later.'
+    });
+    return;
+  }
+
+  business.value = {
+    ...business.value,
+    reward_label: rewardLabel.value,
+    reward_goal: rewardCounter.value,
+    primary_color: swatch.value
+  };
+
+  toast.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: 'Loyalty card customized successfully!',
+    life: 3000
+  });
+
+  router.push('/business/new/welcome');
+};
 </script>
 
 <template>
@@ -29,10 +101,13 @@ const swatch = ref<string>(business.value?.primary_color || '');
       <h1>Customize Loyalty Card</h1>
     </header>
 
-    <form>
+    <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <span>Enter a Reward Label</span>
-        <InputText placeholder="e.g., “One Free Drink”" size="large" id="reward-label" v-model="rewardLabel" type="text" />
+        <FloatLabel class="mt-2" variant="on">
+          <label for="reward-label">e.g., “One Free Drink”</label>
+          <InputText size="large" id="reward-label" v-model="rewardLabel" type="text" />
+        </FloatLabel>
       </div>
 
       <div class="form-group">
@@ -49,7 +124,7 @@ const swatch = ref<string>(business.value?.primary_color || '');
 
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
-    
+
     <AppFooter class="footer" />
   </section>
 </template>

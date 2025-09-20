@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useErrorModal } from '~/composables/ui/useErrorModal';
+
 definePageMeta({
   layout: 'card'
 });
@@ -7,6 +9,39 @@ useHead({
   title: 'Welcome - Punchly',
   meta: [{ name: 'description', content: 'Welcome to Punchly' }]
 });
+
+const router = useRouter();
+const errorModal = useErrorModal();
+
+const handleGoToDashboard = async () => {
+  
+  const client = useSupabaseClient<Database>();
+  const business = useState<Tables<'business'> | null>('business_data');
+
+  if (!business.value) {
+    errorModal.showError({
+      header: 'Business Data Error',
+      message: 'Business data is not available. Please try again later.'
+    });
+    return;
+  }
+
+  const { error } = await client
+    .from('business')
+    .update({ onboarded_at: new Date().toISOString() })
+    .eq('id', business.value.id)
+
+  if (error) {
+    console.error('Error updating business data:', error);
+    errorModal.showError({
+      header: 'Update Error',
+      message: 'There was an issue updating your business data. Please try again.'
+    });
+    return;
+  }
+
+  router.push('/business/dashboard');
+};
 </script>
 
 <template>
@@ -31,12 +66,10 @@ useHead({
         <p>— The Punchly Team</p>
       </div>
 
-      <Button type="submit">Go to Dashboard</Button>
+      <Button @click="handleGoToDashboard">Go to Dashboard</Button>
     </section>
 
-    <footer>
-      <p>&copy; 2025 Punchly. All rights reserved.</p>
-    </footer>
+    <AppFooter class="footer" />
   </section>
 </template>
 
@@ -64,6 +97,14 @@ useHead({
   }
 }
 
+header > h1 {
+  font-size: 1.9rem;
+  text-align: start;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
 .main-content {
   width: 100%;
   display: flex;
@@ -89,23 +130,13 @@ section {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  /* padding: 0 1rem; */
+  margin: 1rem 0;
   text-align: center;
 
-  gap: 1rem;
+  gap: 2rem;
 }
 
-::v-deep(.p-floatlabel),
-::v-deep(.p-inputtext) {
-  width: 100%;
-}
-
-::v-deep(.p-inputtext) {
-  padding: 1.5rem 1rem;
-  font-size: 1.2rem;
-}
-
-footer {
+.footer {
   font-size: 11px;
 }
 

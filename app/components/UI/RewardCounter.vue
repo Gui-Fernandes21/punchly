@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
   modelValue: {
     type: Number,
@@ -15,10 +16,14 @@ const handleIncrement = () => {
 };
 
 const handleDecrement = () => {
-  if (counter.value > 0) {
+  if (counter.value > 1) {
     counter.value--;
   }
 };
+
+watch(counter, (newVal) => {
+  emit('update:modelValue', newVal);
+});
 
 defineExpose({
   counter,

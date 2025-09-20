@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+const emit = defineEmits(['update:modelValue']);
+
 const props = defineProps({
   modelValue: {
     type: String,
@@ -16,6 +18,13 @@ const handleColorSelect = (color: string) => {
   selectedColor.value = color;
 };
 
+watch(selectedColor, (newColor) => {
+  emit('update:modelValue', newColor);
+});
+
+defineExpose({
+  selectedColor
+});
 </script>
 
 <template>
@@ -59,5 +68,4 @@ section {
   font-size: 1.5rem;
   color: white;
 }
-
 </style>

@@ -1,16 +1,17 @@
 <template>
-  <div class="layout-container" >
+  <div class="layout-container">
     <div class="layout-card mt-4">
       <NuxtPage></NuxtPage>
     </div>
     <Toast position="bottom-right" />
-    <ConfirmDialog />
+
+    <ConfirmDialog style="width: 80% !important" />
   </div>
 </template>
 
 <style scoped>
 .layout-container {
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   min-height: 100vh;
   display: flex;
   justify-content: center;
