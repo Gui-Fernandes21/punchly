@@ -16,6 +16,8 @@ const businessData = useState<Tables<'business'> | null>('business_data');
 
 const toast = useToast();
 const confirm = useConfirm();
+const router = useRouter();
+
 
 const { cropper, fileName, fullImage, allowCrop, croppedImage, imageBlob, editDialogVisible, selectImage, clearImage, saveCroppedImage } = useImageCropper({ confirm, toast });
 
@@ -23,88 +25,80 @@ const { cropper, fileName, fullImage, allowCrop, croppedImage, imageBlob, editDi
 const imageDisplayUrl = computed(() => croppedImage.value || businessData.value?.logo_url || '/layout/images/unknown-user-nobg.png');
 
 const businessName = ref(businessData.value?.name || '');
+const pending = ref(false)
 
-const test = () => {
-  console.log('businessData', businessData.value?.id);
-};
-
-const checkSubmission = () => {
-  if (!businessData.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Business data is missing. Please restart the process.', life: 3000 });
-    return;
-  }
-
-  if (!businessName.value || businessName.value.trim() === '') {
-    toast.add({ severity: 'warn', summary: 'Warning', detail: 'Please enter your business name.', life: 3000 });
-    return false;
-  }
-
-  if (imageBlob.value === null || fileName.value === null || croppedImage.value === null) {
+// tiny helper: awaitable confirm
+const confirmProceedWithoutLogo = (): Promise<boolean> => {
+  return new Promise((resolve) => {
     confirm.require({
       message: 'No logo image uploaded. Do you want to proceed without a logo?',
       header: 'No Logo Uploaded',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Yes, proceed',
       rejectLabel: 'No, go back',
-      reject() {
-        toast.add({ severity: 'info', summary: 'Info', detail: 'Please upload a logo to proceed.', life: 3000 });
-      },
-      accept() {
-        handleSubmit(true);
-      }
+      accept: () => resolve(true),
+      reject: () => resolve(false)
     });
-  } else {
-    handleSubmit(false);
-  }
+  });
 };
 
-const handleSubmit = async (skipFile: boolean) => {
+const handleSubmit = async () => {
   if (!businessData.value?.id) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Business ID is missing. Please restart the process.', life: 3000 });
     return;
   }
+  if (!businessName.value || businessName.value.trim() === '') {
+    toast.add({ severity: 'warn', summary: 'Warning', detail: 'Please enter your business name.', life: 3000 });
+    return false;
+  }
+
+  if (!imageBlob.value) {
+    const ok = await confirmProceedWithoutLogo()
+    if (!ok) {
+      toast.add({ severity: 'info', summary: 'Info', detail: 'Please upload a logo to proceed.', life: 3000 })
+      return
+    }
+  }
 
   const client = useSupabaseClient<Database>();
-  let publicUrl: string | null = null;
-  let imagePath: string | null = null;
 
-  if (!skipFile && imageBlob.value && fileName.value && croppedImage.value) {
-    const { publicUrl: url, path, error } = await uploadBusinessLogo(imageBlob.value, fileName.value.replace(/\.[^/.]+$/, ''), businessData.value.id, client);
-    if (error) {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload logo image. Please try again.', life: 3000 });
-      console.error('Error uploading image:', error);
-      return;
+  pending.value = true
+  try {
+    let publicUrl: string | null = null
+    let imagePath: string | null = null
+
+    // Upload only if we have a new blob
+    if (imageBlob.value) {
+      const res = await uploadBusinessLogo(imageBlob.value, fileName.value || 'logo.png', businessData.value.id, client);
+      if (res.error) throw res.error;
+      publicUrl = res.publicUrl
+      imagePath = res.path
     }
-    publicUrl = url;
-    imagePath = path;
-  }
 
-  const { error } = await client
-    .from('business')
-    .update({
+    // Build partial update (avoid overwriting unchanged fields)
+    const patch: Partial<Tables<'business'>> = { name: businessName.value }
+    if (publicUrl) patch.logo_url = publicUrl
+    if (imagePath) patch.logo_path = imagePath
+
+    const { error } = await client.from('business').update(patch).eq('id', businessData.value.id)
+    if (error) throw error
+
+    // update local state once
+    businessData.value = {
+      ...businessData.value,
       name: businessName.value,
-      logo_url: publicUrl || businessData.value?.logo_url,
-      logo_path: imagePath || businessData.value?.logo_path
-    })
-    .eq('id', businessData.value?.id as number);
+      logo_url: publicUrl || businessData.value?.logo_url || null,
+      logo_path: imagePath || businessData.value?.logo_path || null,
+    } as Tables<'business'>
 
-  if (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to update business name. Please try again.', life: 3000 });
-    console.error('Error updating business name:', error);
-    return;
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Business updated!', life: 2500 })
+    router.push({ path: '/business/new/card' })
+  } catch (err: any) {
+    console.error(err)
+    toast.add({ severity: 'error', summary: 'Error', detail: err?.message || 'Something went wrong.', life: 4000 })
+  } finally {
+    pending.value = false
   }
-
-  businessData.value = {
-    ...businessData.value,
-    name: businessName.value,
-    logo_url: publicUrl || businessData.value?.logo_url,
-    logo_path: imagePath || businessData.value?.logo_path
-  } as Tables<'business'>;
-
-  toast.add({ severity: 'success', summary: 'Success', detail: 'Business account created successfully!', life: 3000 });
-
-  const router = useRouter();
-  router.push({ path: '/business/new/card' });
 };
 </script>
 
@@ -120,7 +114,7 @@ const handleSubmit = async (skipFile: boolean) => {
       <p>Upload your business logo and enter its name.</p>
     </header>
 
-    <form @submit.prevent="checkSubmission">
+    <form @submit.prevent="handleSubmit">
       <section class="image flex items-center justify-center w-full">
         <div class="image-container relative">
           <img class="image-display" :src="imageDisplayUrl || '/layout/images/menutz-logo.png'" draggable="false" />
