@@ -24,9 +24,23 @@ const resolver = ref(
   )
 );
 const onFormSubmit = ({ valid }: { valid: boolean }) => {
-  if (valid) {
-    toast.add({ severity: 'success', summary: 'Form is submitted.', life: 3000 });
+  if (!valid) {
+    toast.add({ severity: 'error', summary: 'Form is invalid.', life: 3000 });
+    return;
   }
+
+  const { error } = useFetch('https://formspree.io/f/xkgvdyzz', {
+    method: 'POST',
+    body: initialValues.value
+  });
+
+  if (error.value) {
+    return toast.add({ severity: 'error', summary: 'Error sending message.', life: 3000 });
+  }
+
+  toast.add({ severity: 'success', summary: 'Message sent successfully!', life: 3000 });
+
+  initialValues.value = { message: '', email: '', subject: '' };
 };
 </script>
 
@@ -41,19 +55,19 @@ const onFormSubmit = ({ valid }: { valid: boolean }) => {
       <Form v-slot="$form" class="contact-form-card flex flex-col gap-4" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit">
         <FloatLabel class="flex flex-col gap-1" variant="in">
           <label for="email" class="text-lg">Email</label>
-          <InputText name="email" style="resize: none" />
+          <InputText v-model="initialValues.email" name="email" style="resize: none" />
           <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{ $form.email.error?.message }}</Message>
         </FloatLabel>
 
         <FloatLabel class="flex flex-col gap-1" variant="in">
           <label for="subject" class="text-lg">Subject</label>
-          <InputText name="subject" style="resize: none" />
+          <InputText v-model="initialValues.subject" name="subject" style="resize: none" />
           <Message v-if="$form.subject?.invalid" severity="error" size="small" variant="simple">{{ $form.subject.error?.message }}</Message>
         </FloatLabel>
-        
+
         <FloatLabel class="flex flex-col gap-1" variant="in">
           <label for="message" class="text-lg">Your Message</label>
-          <Textarea name="message" rows="5" cols="30" style="resize: none" />
+          <Textarea v-model="initialValues.message" name="message" rows="5" cols="30" style="resize: none" />
           <Message v-if="$form.message?.invalid" severity="error" size="small" variant="simple">{{ $form.message.error?.message }}</Message>
         </FloatLabel>
         <Button type="submit" severity="primary" label="Submit" />
