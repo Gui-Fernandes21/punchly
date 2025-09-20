@@ -3,41 +3,56 @@ import { ref } from 'vue';
 
 const props = defineProps<{
   mode: 'full' | 'compact';
+  cardData?: WalletData;
 }>();
 
 interface WalletData {
   businessName: string;
   rewardLabel: string;
-  rewardCount: number;
-  totalRewards: number;
-  cardColor: string;
+  punches: number;
+  rewardGoal: number;
+  primaryColor: string;
 }
 
 const walletData = ref<WalletData>({
-  businessName: 'Foxtail Coffee Rewards',
-  rewardLabel: 'One Free Drink',
-  rewardCount: 5,
-  totalRewards: 10,
-  cardColor: '#14ABB7'
+  businessName: props.cardData?.businessName || '',
+  rewardLabel: props.cardData?.rewardLabel || '',
+  punches: props.cardData?.punches || 5,
+  rewardGoal: props.cardData?.rewardGoal || 10,
+  primaryColor: props.cardData?.primaryColor || '#14ABB7'
 });
 
-defineExpose({});
+watch(
+  () => props.cardData,
+  (newData) => {
+    if (newData) {
+      walletData.value = {
+        businessName: newData.businessName,
+        rewardLabel: newData.rewardLabel,
+        punches: newData.punches,
+        rewardGoal: newData.rewardGoal,
+        primaryColor: newData.primaryColor
+      };
+    }
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <template>
-  <section class="wallet" :style="{ borderColor: walletData.cardColor }">
-    <header v-if="props.mode === 'full'" class="wallet-header" :style="{ backgroundColor: walletData.cardColor }" >
+  <section class="wallet" :style="{ borderColor: walletData.primaryColor }">
+    <header v-if="props.mode === 'full'" class="wallet-header" :style="{ backgroundColor: walletData.primaryColor }" >
       <h2>{{ walletData.businessName }}</h2>
     </header>
     <div class="content">
       <div class="wallet-grid">
-        <div v-for="(n, index) in walletData.totalRewards" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.rewardCount ? walletData.cardColor : '#e0e0e0' }">
-          <Icon v-if="n == walletData.totalRewards" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
+        <div v-for="(n, index) in walletData.rewardGoal" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.punches ? walletData.primaryColor : '#e0e0e0' }">
+          <Icon v-if="n == walletData.rewardGoal" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
         </div>
       </div>
 
       <p v-if="props.mode === 'full'">
-        Only <strong>{{ walletData.totalRewards - walletData.rewardCount }}</strong> more punches needed for (a) <br />
+        Only <strong>{{ walletData.rewardGoal - walletData.punches }}</strong> more punches needed for (a) <br />
         "<strong>{{ walletData.rewardLabel }}</strong>"!
       </p>
     </div>

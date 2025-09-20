@@ -27,7 +27,7 @@ const onFormSubmit = ({ valid }: { valid: boolean }) => {
   if (!valid) {
     toast.add({ severity: 'error', summary: 'Form is invalid.', life: 3000 });
     return;
-  }
+  } 
 
   const { error } = useFetch('https://formspree.io/f/xkgvdyzz', {
     method: 'POST',

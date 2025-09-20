@@ -1,32 +1,62 @@
 <script lang="ts" setup>
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { z } from 'zod';
-const toast = useToast();
 
 useHead({
   title: 'Print Store QR Code - Punchly',
   meta: [{ name: 'description', content: 'Print the QR code for your store on Punchly' }]
 });
 
+const business = useState<Tables<'business'> | null>('business_data');
+const toast = useToast();
+
 const initialValues = ref({
-  rewardLabel: '',
-  email: '',
-  subject: ''
+  businessName: business.value?.name || 'Your Business Name',
+  rewardLabel: business.value?.reward_label || '',
+  punches: 4,
+  rewardGoal: business.value?.reward_goal || 1,
+  primaryColor: business.value?.primary_color || ''
 });
 
 const resolver = ref(
   zodResolver(
     z.object({
-      rewardLabel: z.string().min(1, { message: 'Reward Label is required.' }),
-      email: z.string().email({ message: 'Email is invalid.' }),
-      subject: z.string().min(1, { message: 'Subject is required.' })
+      rewardLabel: z.string().nonempty({ message: 'Reward Label is required and cannot be empty.' }).min(2, { message: 'Reward Label must be at least 2 characters long.' }),
     })
   )
 );
-const onFormSubmit = ({ valid }: { valid: boolean }) => {
-  if (valid) {
-    toast.add({ severity: 'success', summary: 'Form is submitted.', life: 3000 });
+
+const onFormSubmit = async ({ valid }: { valid: boolean }) => {
+  if (!valid) {
+    toast.add({ severity: 'error', summary: 'Form is invalid.', life: 3000 });
+    return;
   }
+  
+  if(!business.value) {
+    toast.add({ severity: 'error', summary: 'Business data is not available.', life: 3000 });
+    return;
+  }
+
+  const client = useSupabaseClient<Database>();
+  const router = useRouter();
+
+  const { data, error } = await client.from('business').update({
+    reward_label: initialValues.value.rewardLabel,
+    reward_goal: initialValues.value.rewardGoal,
+    primary_color: initialValues.value.primaryColor
+  }).eq('id', business.value?.id).select().single();
+
+  if (error) {
+    console.error('Error updating business data:', error);
+    toast.add({ severity: 'error', summary: 'Error saving changes. Please try again.', life: 3000 });
+    return;
+  }
+
+  business.value = data;
+  toast.add({ severity: 'success', summary: 'Changes saved successfully!', life: 3000 });
+  router.push('/business/dashboard');
+  
+
 };
 </script>
 
@@ -43,38 +73,39 @@ const onFormSubmit = ({ valid }: { valid: boolean }) => {
           <header>
             <h2>Preview Loyalty Card</h2>
           </header>
-          <Divider class="my-2" />
-          <UIWallet mode="full" />
+          <Divider class="my-4" />
+          <UIWallet mode="full" :cardData="initialValues" />
         </div>
-        
+
         <div class="form-group">
           <header>
             <h2>Reward Description</h2>
           </header>
-          <FloatLabel class="flex flex-col gap-1" variant="in">
-            <label for="reward-label" class="text-lg">e.g., “One Free Drink”</label>
-            <InputText name="reward-label" style="resize: none" />
-            <Message v-if="$form['reward-label']?.invalid" severity="error" size="small" variant="simple">{{ $form['reward-label'].error?.message }}</Message>
+          <FloatLabel class="flex flex-col gap-1" variant="on">
+            <label for="rewardLabel" class="text-lg">e.g., “One Free Drink”</label>
+            <InputText v-model="initialValues.rewardLabel" name="rewardLabel" size="large"  />
+            <Message v-if="$form.rewardLabel?.invalid" severity="error" size="small" variant="simple">{{ $form.rewardLabel.error?.message }}</Message>
           </FloatLabel>
         </div>
 
         <div class="form-group">
           <header>
-            <h2>Reward Goal</h2>
+            <h2 class="!mb-0">Reward Goal</h2>
             <p>Number of punches required for reward.</p>
           </header>
-          <Divider class="my-2" />
-          <UIRewardCounter />
+          <Divider class="my-4" />
+          <UIRewardCounter v-model="initialValues.rewardGoal" />
+          <Message v-if="$form.rewardGoal?.invalid" severity="error" size="small" variant="simple">{{ $form.rewardGoal?.error?.message }}</Message>
         </div>
 
         <div class="form-group">
           <header>
             <h2>Select a primary color</h2>
           </header>
-          <UISwatch />
+          <UISwatch v-model="initialValues.primaryColor" />
+          <Message v-if="$form.primaryColor?.invalid" severity="error" size="small" variant="simple">{{ $form.primaryColor.error?.message }}</Message>
         </div>
 
-        
         <Button type="submit" severity="primary" label="Save Changes" />
       </Form>
     </div>
@@ -124,11 +155,11 @@ header > p {
   background: #fff;
   border-radius: 8px;
   padding: 1rem;
-  
+
   text-align: left;
 
   & > header > h2 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
     margin-bottom: 0.5rem;
   }

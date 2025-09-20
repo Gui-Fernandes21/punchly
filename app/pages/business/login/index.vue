@@ -16,9 +16,10 @@ const email = ref('');
 const password = ref('');
 
 const handleSubmit = async () => {
-  // Handle form submission logic here
-  console.log('Email:', email.value);
-  console.log('Password:', password.value);
+  if (email.value.trim() === '' || password.value.trim() === '') {
+    showError({ header: 'Validation Error', message: 'Email and password are required.' });
+    return;
+  }
 
   const supabase = useSupabaseClient<Database>();
 
@@ -96,6 +97,9 @@ const handleSubmit = async () => {
   & > img {
     width: 11rem;
   }
+}
+header {
+  margin-bottom: 1rem;
 }
 header > h1 {
   font-size: 2rem;
