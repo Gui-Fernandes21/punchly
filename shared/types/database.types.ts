@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: number
+          logo_path: string | null
           logo_url: string | null
           name: string | null
           onboarded_at: string | null
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: number
+          logo_path?: string | null
           logo_url?: string | null
           name?: string | null
           onboarded_at?: string | null
@@ -45,6 +47,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: number
+          logo_path?: string | null
           logo_url?: string | null
           name?: string | null
           onboarded_at?: string | null

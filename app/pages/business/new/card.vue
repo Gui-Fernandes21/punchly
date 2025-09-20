@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
@@ -8,7 +8,14 @@ useHead({
   meta: [{ name: 'description', content: 'Customize your loyalty card to continue using Punchly' }]
 });
 
-const reward = ref('');
+const business = useState<Tables<'business'> | null>('business_data');
+
+const rewardLabel = ref('');
+const rewardCounter = ref<number>(business.value?.reward_goal || 0);
+const swatch = ref<string>(business.value?.primary_color || '');
+
+
+
 </script>
 
 <template>
@@ -25,41 +32,35 @@ const reward = ref('');
     <form>
       <div class="form-group">
         <span>Enter a Reward Label</span>
-        <InputText placeholder="e.g., “One Free Drink”" size="large" id="reward-label" v-model="reward" type="text" />
+        <InputText placeholder="e.g., “One Free Drink”" size="large" id="reward-label" v-model="rewardLabel" type="text" />
       </div>
 
       <div class="form-group">
         <span>Set a Reward Goal</span>
         <div class="reward-container">
-          <UIRewardCounter ref="rewardCounter" />
+          <UIRewardCounter v-model="rewardCounter" />
         </div>
       </div>
 
       <div class="form-group">
         <span>Select your primary color</span>
-        <UISwatch ref="swatch" />
+        <UISwatch v-model="swatch" />
       </div>
 
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
-
-    <footer>
-      <p>&copy; 2025 Punchly. All rights reserved.</p>
-    </footer>
+    
+    <AppFooter class="footer" />
   </section>
 </template>
 
 <style scoped>
-section.image {
-  margin: 0 0 2.5rem;
-}
-
 .reward-container {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 0.5rem;
@@ -82,30 +83,12 @@ section.image {
   }
 }
 
-.image-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-.image-container {
-  width: 10rem;
-  height: 10rem;
-  background-color: rgba(240, 240, 240, 0.288);
-
-  border-radius: 50%;
-  border-style: none;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-
-  margin: 0.5rem 0;
-  overflow: hidden;
-
-  z-index: 4;
-}
-.image-display {
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+header > h1 {
+  font-size: 1.9rem;
+  text-align: start;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .placeholder {

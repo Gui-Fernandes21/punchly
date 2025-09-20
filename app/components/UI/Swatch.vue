@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const selectedColor = ref('');
+const props = defineProps({
+  modelValue: {
+    type: String,
+    required: false
+  }
+});
+
+const selectedColor = ref(props.modelValue || null);
 
 const availableColors = ['#4A90E2', '#00A3AD', '#34C759', '#000000', '#6E84A3', '#2F3136', '#F5A623', '#E53935', '#D00280', '#795548', '#8E8E93', '#E5E5EA', '#D87D4A', '#4A00E0', '#0A2540', '#2E7D32', '#14ABB7', '#BB62FF'];
 
@@ -9,10 +16,6 @@ const handleColorSelect = (color: string) => {
   selectedColor.value = color;
 };
 
-defineExpose({
-  selectedColor,
-  handleColorSelect
-});
 </script>
 
 <template>

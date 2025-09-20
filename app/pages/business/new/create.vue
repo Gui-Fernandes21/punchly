@@ -4,35 +4,108 @@ import 'vue-advanced-cropper/dist/style.css';
 import 'vue-advanced-cropper/dist/theme.compact.css';
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
-  title: 'Verify Phone - Punchly',
-  meta: [{ name: 'description', content: 'Verify your phone number to continue using Punchly' }]
+  title: 'Create Business - Punchly',
+  meta: [{ name: 'description', content: 'Create your business account on Punchly' }]
 });
+
+const businessData = useState<Tables<'business'> | null>('business_data');
 
 const toast = useToast();
 const confirm = useConfirm();
 
-const { cropper, fileName, fullImage, allowCrop, croppedImage, editDialogVisible, selectImage, clearImage, saveCroppedImage } = useImageCropper({ confirm, toast });
+const { cropper, fileName, fullImage, allowCrop, croppedImage, imageBlob, editDialogVisible, selectImage, clearImage, saveCroppedImage } = useImageCropper({ confirm, toast });
 
 // COMPUTED
-const imageDisplayUrl = computed(() => croppedImage.value || '/layout/images/menutz-logo.png');
+const imageDisplayUrl = computed(() => croppedImage.value || businessData.value?.logo_url || '/layout/images/unknown-user-nobg.png');
 
-// IMAGE ACTIONS
-const onImageClear = () => {
-  clearImage();
-};
-const onSaveCroppedImage = () => {
-  saveCroppedImage();
-};
-const onImageSelect = (imageData: object) => {
-  selectImage(imageData);
-  editDialogVisible.value = true;
+const businessName = ref(businessData.value?.name || '');
+
+const test = () => {
+  console.log('businessData', businessData.value?.id);
 };
 
-const name = ref('');
+const checkSubmission = () => {
+  if (!businessData.value) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Business data is missing. Please restart the process.', life: 3000 });
+    return;
+  }
+
+  if (!businessName.value || businessName.value.trim() === '') {
+    toast.add({ severity: 'warn', summary: 'Warning', detail: 'Please enter your business name.', life: 3000 });
+    return false;
+  }
+
+  if (imageBlob.value === null || fileName.value === null || croppedImage.value === null) {
+    confirm.require({
+      message: 'No logo image uploaded. Do you want to proceed without a logo?',
+      header: 'No Logo Uploaded',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes, proceed',
+      rejectLabel: 'No, go back',
+      reject() {
+        toast.add({ severity: 'info', summary: 'Info', detail: 'Please upload a logo to proceed.', life: 3000 });
+      },
+      accept() {
+        handleSubmit(true);
+      }
+    });
+  } else {
+    handleSubmit(false);
+  }
+};
+
+const handleSubmit = async (skipFile: boolean) => {
+  if (!businessData.value?.id) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Business ID is missing. Please restart the process.', life: 3000 });
+    return;
+  }
+
+  const client = useSupabaseClient<Database>();
+  let publicUrl: string | null = null;
+  let imagePath: string | null = null;
+
+  if (!skipFile && imageBlob.value && fileName.value && croppedImage.value) {
+    const { publicUrl: url, path, error } = await uploadBusinessLogo(imageBlob.value, fileName.value.replace(/\.[^/.]+$/, ''), businessData.value.id, client);
+    if (error) {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload logo image. Please try again.', life: 3000 });
+      console.error('Error uploading image:', error);
+      return;
+    }
+    publicUrl = url;
+    imagePath = path;
+  }
+
+  const { error } = await client
+    .from('business')
+    .update({
+      name: businessName.value,
+      logo_url: publicUrl || businessData.value?.logo_url,
+      logo_path: imagePath || businessData.value?.logo_path
+    })
+    .eq('id', businessData.value?.id as number);
+
+  if (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to update business name. Please try again.', life: 3000 });
+    console.error('Error updating business name:', error);
+    return;
+  }
+
+  businessData.value = {
+    ...businessData.value,
+    name: businessName.value,
+    logo_url: publicUrl || businessData.value?.logo_url,
+    logo_path: imagePath || businessData.value?.logo_path
+  } as Tables<'business'>;
+
+  toast.add({ severity: 'success', summary: 'Success', detail: 'Business account created successfully!', life: 3000 });
+
+  const router = useRouter();
+  router.push({ path: '/business/new/card' });
+};
 </script>
 
 <template>
@@ -47,42 +120,40 @@ const name = ref('');
       <p>Upload your business logo and enter its name.</p>
     </header>
 
-    <form>
+    <form @submit.prevent="checkSubmission">
       <section class="image flex items-center justify-center w-full">
         <div class="image-container relative">
           <img class="image-display" :src="imageDisplayUrl || '/layout/images/menutz-logo.png'" draggable="false" />
-          <div class="clear-wrapper" @click="onImageClear" v-if="allowCrop">
+          <div class="clear-wrapper" @click="clearImage" v-if="allowCrop">
             <i class="pi pi-trash clear-btn"></i>
           </div>
         </div>
 
         <div class="image-actions flex gap-2 w-full flex-col">
-          <FileUpload mode="basic" name="avatar" @select="onImageSelect" customUpload auto accept="image/*" :maxFileSize="10000000" chooseLabel="Upload Image" class="p-button-outlined p-button-plain w-unset"></FileUpload>
-          <Button icon="pi pi-pencil" severity="primary" label="Adjust Image" class="w-full my-2" @click="editDialogVisible = true" :disabled="!allowCrop" />
-          <Dialog v-model:visible="editDialogVisible" header="Edit Logo" modal style="width: 30rem">
+          <FileUpload mode="basic" name="avatar" @select="selectImage" customUpload auto accept="image/*" :maxFileSize="10000000" chooseLabel="Upload Image" class="p-button-outlined p-button-plain w-unset"></FileUpload>
+          <Button icon="pi pi-pencil" severity="primary" label="Adjust Image" class="w-full" @click="editDialogVisible = true" :disabled="!allowCrop" />
+          <Dialog v-model:visible="editDialogVisible" header="Edit Logo" modal style="width: 25rem">
             <div class="h-25 w-25">
               <Cropper ref="cropper" class="cropper-edit" :stencil-component="CircleStencil" :src="fullImage" style="height: 25rem" :canvas="{ width: 256, height: 256 }"></Cropper>
             </div>
 
             <template #footer>
-              <Button label="Cancel" text severity="secondary" @click="editDialogVisible = false" autofocus />
-              <Button label="Save" outlined severity="primary" @click="onSaveCroppedImage" autofocus />
+              <Button label="Cancel" severity="secondary" @click="editDialogVisible = false" autofocus />
+              <Button label="Save" severity="primary" @click="saveCroppedImage" autofocus />
             </template>
           </Dialog>
         </div>
       </section>
 
-      <FloatLabel>
-        <InputText size="large" id="business-name" v-model="name" type="text" />
+      <FloatLabel variant="on">
+        <InputText size="large" id="business-name" v-model="businessName" type="text" />
         <label for="business-name">Business Name</label>
       </FloatLabel>
 
       <Button class="btn-submit" type="submit">Create Account</Button>
     </form>
 
-    <footer>
-      <p>&copy; 2025 Punchly. All rights reserved.</p>
-    </footer>
+    <AppFooter class="footer" />
   </section>
 </template>
 
@@ -105,16 +176,28 @@ section.image {
   border-radius: 50%;
   border-style: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-  
-  margin: .5rem 0;
+
+  margin: 0.5rem 0;
   overflow: hidden;
 
   z-index: 4;
 }
+
+header > h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
 .image-display {
   width: 100%;
   height: 100%;
   z-index: 1;
+}
+
+.footer {
+  margin-top: 0;
 }
 
 .placeholder {

@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const counter = ref(0);
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    required: true
+  }
+});
+
+const counter = ref(props.modelValue);
 
 const handleIncrement = () => {
   counter.value++;
@@ -15,8 +22,6 @@ const handleDecrement = () => {
 
 defineExpose({
   counter,
-  handleIncrement,
-  handleDecrement 
 });
 </script>
 

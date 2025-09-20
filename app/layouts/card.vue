@@ -1,13 +1,10 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="layout-container" >
-    <div class="layout-card">
+    <div class="layout-card mt-4">
       <NuxtPage></NuxtPage>
     </div>
     <Toast position="bottom-right" />
+    <ConfirmDialog />
   </div>
 </template>
 
@@ -23,7 +20,7 @@
 .layout-card {
   position: relative;
   width: 30%;
-  height: 80vh;
+  height: fit-content;
   background-color: white;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -35,9 +32,8 @@
 @media (max-width: 768px) {
   .layout-card {
     width: 90vw;
-    height: 80vh;
+    height: fit-content;
     padding: 12px;
   }
 }
-
 </style>

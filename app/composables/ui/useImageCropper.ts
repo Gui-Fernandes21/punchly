@@ -43,6 +43,8 @@ export function useImageCropper({ confirm, toast }: UseImageCropperProps) {
   const editDialogVisible: Ref<boolean> = ref(false);
   const fileName: Ref<string | null> = ref(null);
 
+  const imageBlob: Ref<Blob | null> = ref(null);
+
   const selectImage = (imageData: object | any) => {
     const file = imageData?.files?.[0];
 
@@ -59,6 +61,7 @@ export function useImageCropper({ confirm, toast }: UseImageCropperProps) {
 
       reader.readAsDataURL(file);
     }
+    editDialogVisible.value = true;
   };
 
   const clearImage = () => {
@@ -94,6 +97,11 @@ export function useImageCropper({ confirm, toast }: UseImageCropperProps) {
   const saveCroppedImage = () => {
     if (cropper.value) {
       const { canvas } = cropper.value.getResult() as CropperResult;
+
+      canvas.toBlob(blob => {
+        imageBlob.value = blob;
+      });
+      
       croppedImage.value = canvas.toDataURL();
       editDialogVisible.value = false;
     }
@@ -102,6 +110,7 @@ export function useImageCropper({ confirm, toast }: UseImageCropperProps) {
   return {
     cropper,
     fileName,
+    imageBlob,
     fullImage,
     croppedImage,
     editDialogVisible,

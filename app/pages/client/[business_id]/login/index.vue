@@ -2,18 +2,15 @@
 import { vMaska } from 'maska/vue';
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
   title: 'Login - Punchly',
-  meta: [
-    { name: 'description', content: 'Login to Punchly' }
-  ]
+  meta: [{ name: 'description', content: 'Login to Punchly' }]
 });
 
 const mobile = ref('');
-
 </script>
 
 <template>
@@ -88,7 +85,6 @@ button {
   margin-top: 1rem;
   padding: 1rem;
 }
-
 
 ::v-deep(.p-floatlabel),
 ::v-deep(.p-inputtext) {

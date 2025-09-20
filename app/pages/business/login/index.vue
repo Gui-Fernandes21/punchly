@@ -4,7 +4,7 @@ import { useErrorModal } from '~/composables/ui/useErrorModal';
 const { showError } = useErrorModal();
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
@@ -29,7 +29,7 @@ const handleSubmit = async () => {
 
   if (error) {
     console.error('Error:', error.message);
-    showError({ header: "Error", message: error.message || 'An error occurred during login.' });
+    showError({ header: 'Error', message: error.message || 'An error occurred during login.' });
     return;
   } else {
     console.log('Success:', data);

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
@@ -25,7 +25,7 @@ useHead({
         <p>Thank you for choosing to partner with us.</p>
         <p>Your business is now part of the Punchly network, making it easier than ever to reward customers and keep them coming back.</p>
 
-        <Divider style="width: 40%;" />
+        <Divider style="width: 40%" />
 
         <p>Log in to your dashboard to set up your rewards and start engaging customers today.</p>
         <p>— The Punchly Team</p>

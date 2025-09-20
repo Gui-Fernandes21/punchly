@@ -4,7 +4,7 @@ import { useErrorModal } from '~/composables/ui/useErrorModal';
 const { showError } = useErrorModal();
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'card'
 });
 
 useHead({
