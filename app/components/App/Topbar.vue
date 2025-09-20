@@ -1,13 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue';
 
 const { onMenuToggle, layoutConfig, tabs, closeTab, isDarkTheme } = useLayout();
 
 const route = useRoute();
-
-// const router = useRouter();
-
-// const { restaurant } = useRestaurant();
+const business = useState<Tables<'business'> | null>('business_data');
 
 // function onCloseTab(index) {
 //   if (tabs.value.length > 1) {
@@ -19,10 +16,7 @@ const route = useRoute();
 //   closeTab(index);
 // }
 
-// const restaurantLogo = computed(() => {
-//   if (!restaurant.value) return '/layout/images/menutz-logo.png';
-//   return restaurant.value.logo;
-// });
+const businessLogo = computed(() => business.value?.logo_url ? business.value.logo_url : '/layout/images/unknown-user-nobg.png');
 
 const avatar = computed(() => {
   const path = '/layout/images/';
@@ -34,32 +28,12 @@ const avatar = computed(() => {
   //   avatar = path + 'menutz-logo.png';
   // }
 
-  return path + 'menutz-logo.png';
+  return path + 'unknown-user-nobg.png';
 });
 
-// const username = computed(() => {
-//   return user.value?.display_name ? user.value.display_name : 'Unknown User';
-// });
-
-// const userEmail = computed(() => {
-//   if (user.value?.email) {
-//     return user.value.email;
-//   } else {
-//     return 'Unknown Email';
-//   }
-// });
-
-// const userBio = computed(() => {
-//   if (user.value?.biography) {
-//     return user.value.biography;
-//   } else {
-//     return 'No bio provided';
-//   }
-// });
-
-const handleProfile = () => {
-  console.log(user.value);
-};
+// const handleProfile = () => {
+//   console.log(user.value);
+// };
 
 const showProfileDrawer = ref(false);
 const closeProfileDrawer = () => {
@@ -92,14 +66,14 @@ const handleLogout = async () => {
 
     <!-- <img class="restaurant-logo" :src="restaurantLogo" draggable="false" alt="Restaurant's Logo"> -->
 
-    <ul class="topbar-menu">
+    <!-- <ul class="topbar-menu">
       <li v-for="(item, i) in tabs" :key="i">
         <NuxtLink :to="item.to" :exact-active-class="'active-route'">
           <span> {{ item.label }}</span>
         </NuxtLink>
         <i class="pi pi-times" @click="onCloseTab(i)"></i>
       </li>
-    </ul>
+    </ul> -->
 
     <Drawer v-model:visible="showProfileDrawer" position="right" class="!w-full md:!w-80 lg:!w-[30rem]">
       <template #header>
@@ -127,8 +101,8 @@ const handleLogout = async () => {
     </div>
 
     <div @click="handleLogout" class="topbar-profile" v-if="route.path.includes('/dashboard')">
-      <img class="topbar-profile-button" src="/images/logo/punchly-logo.png" alt="" />
-      
+      <img class="topbar-profile-button" :src="businessLogo" alt="business_logo" />
+
       <!-- <button type="button" 
         class="topbar-profile-button" 
         @click="showProfileDrawer = true" 
@@ -163,7 +137,7 @@ const handleLogout = async () => {
   justify-content: center;
   height: 100%;
 }
-.navigation-link{
+.navigation-link {
   display: flex;
   align-items: center;
   gap: 0.25rem;

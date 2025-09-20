@@ -4,10 +4,14 @@ useHead({
   meta: [{ name: 'description', content: 'Your business operations dashboard on Punchly' }]
 });
 
-const scannerOpen = ref(false);
+// COMPOSABLES
+const business = useState<Tables<'business'> | null>('business_data');
 
+// STATE
+const scannerOpen = ref(false);
 const modalCustomerCardOpen = ref(false);
 
+// METHODS
 const handleOpenScanner = () => {
   scannerOpen.value = !scannerOpen.value;
 };

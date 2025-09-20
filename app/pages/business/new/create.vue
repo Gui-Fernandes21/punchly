@@ -18,16 +18,16 @@ const toast = useToast();
 const confirm = useConfirm();
 const router = useRouter();
 
-
 const { cropper, fileName, fullImage, allowCrop, croppedImage, imageBlob, editDialogVisible, selectImage, clearImage, saveCroppedImage } = useImageCropper({ confirm, toast });
 
 // COMPUTED
 const imageDisplayUrl = computed(() => croppedImage.value || businessData.value?.logo_url || '/layout/images/unknown-user-nobg.png');
 
+// REFS
 const businessName = ref(businessData.value?.name || '');
-const pending = ref(false)
+const pending = ref(false);
 
-// tiny helper: awaitable confirm
+// METHODS
 const confirmProceedWithoutLogo = (): Promise<boolean> => {
   return new Promise((resolve) => {
     confirm.require({
@@ -53,51 +53,51 @@ const handleSubmit = async () => {
   }
 
   if (!imageBlob.value) {
-    const ok = await confirmProceedWithoutLogo()
+    const ok = await confirmProceedWithoutLogo();
     if (!ok) {
-      toast.add({ severity: 'info', summary: 'Info', detail: 'Please upload a logo to proceed.', life: 3000 })
-      return
+      toast.add({ severity: 'info', summary: 'Info', detail: 'Please upload a logo to proceed.', life: 3000 });
+      return;
     }
   }
 
   const client = useSupabaseClient<Database>();
 
-  pending.value = true
+  pending.value = true;
   try {
-    let publicUrl: string | null = null
-    let imagePath: string | null = null
+    let publicUrl: string | null = null;
+    let imagePath: string | null = null;
 
     // Upload only if we have a new blob
     if (imageBlob.value) {
       const res = await uploadBusinessLogo(imageBlob.value, fileName.value || 'logo.png', businessData.value.id, client);
       if (res.error) throw res.error;
-      publicUrl = res.publicUrl
-      imagePath = res.path
+      publicUrl = res.publicUrl;
+      imagePath = res.path;
     }
 
     // Build partial update (avoid overwriting unchanged fields)
-    const patch: Partial<Tables<'business'>> = { name: businessName.value }
-    if (publicUrl) patch.logo_url = publicUrl
-    if (imagePath) patch.logo_path = imagePath
+    const patch: Partial<Tables<'business'>> = { name: businessName.value };
+    if (publicUrl) patch.logo_url = publicUrl;
+    if (imagePath) patch.logo_path = imagePath;
 
-    const { error } = await client.from('business').update(patch).eq('id', businessData.value.id)
-    if (error) throw error
+    const { error } = await client.from('business').update(patch).eq('id', businessData.value.id);
+    if (error) throw error;
 
     // update local state once
     businessData.value = {
       ...businessData.value,
       name: businessName.value,
       logo_url: publicUrl || businessData.value?.logo_url || null,
-      logo_path: imagePath || businessData.value?.logo_path || null,
-    } as Tables<'business'>
+      logo_path: imagePath || businessData.value?.logo_path || null
+    } as Tables<'business'>;
 
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Business updated!', life: 2500 })
-    router.push({ path: '/business/new/card' })
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Business updated!', life: 2500 });
+    router.push({ path: '/business/new/card' });
   } catch (err: any) {
-    console.error(err)
-    toast.add({ severity: 'error', summary: 'Error', detail: err?.message || 'Something went wrong.', life: 4000 })
+    console.error(err);
+    toast.add({ severity: 'error', summary: 'Error', detail: err?.message || 'Something went wrong.', life: 4000 });
   } finally {
-    pending.value = false
+    pending.value = false;
   }
 };
 </script>
