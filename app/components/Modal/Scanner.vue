@@ -1,13 +1,17 @@
 <script lang="ts" setup>
+import type { DetectedBarcode } from 'nuxt-qrcode';
+
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
   (e: 'scan:success', data: any): void;
+  (e: 'scan:error', error: any): void;
 }>();
 
 const props = defineProps<{
   modelValue: boolean;
 }>();
 
+const result = ref<string[]>();
 const visible = ref<boolean>(props.modelValue);
 
 watch(
@@ -23,8 +27,17 @@ watch(visible, (newVal) => {
   }
 });
 
-const handleScanSuccess = (data: any) => {
-  emit('scan:success', data);
+const handleError = (error: any) => {
+  console.error('Scanner error:', error);
+  emit('scan:error', error);
+};
+
+const handleScanSuccess = (detectedCodes: DetectedBarcode[]) => {
+  result.value = detectedCodes.map((code) => {
+    return code.rawValue;
+  });
+  console.log('Scanned data:', result.value);
+  emit('scan:success', result.value);
 };
 </script>
 
@@ -37,7 +50,8 @@ const handleScanSuccess = (data: any) => {
         </header>
 
         <div class="scanner-canvas font-bold text-2xl block mb-2 mt-6">
-          <img @click="handleScanSuccess" class="scan-guide" src="/svg/scanner-borders.svg" alt="Borders of the Scanner" />
+          <UtilsQrDetector @scan:success="handleScanSuccess" @scan:error="handleError" />
+          <img class="scan-guide" src="/svg/scanner-borders.svg" alt="Borders of the Scanner" />
         </div>
 
         <p class="my-6">Scan Customer's QR Code</p>
@@ -72,5 +86,15 @@ button {
 
   display: grid;
   place-items: center;
+}
+
+.scan-guide {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  pointer-events: none;
 }
 </style>

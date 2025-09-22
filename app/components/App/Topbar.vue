@@ -60,9 +60,9 @@ const handleLogout = async () => {
       </h4>
     </NuxtLink>
 
-    <!-- <button ref="menubutton" class="topbar-menubutton" type="button" @click="onMenuToggle">
+    <button ref="menubutton" class="topbar-menubutton" type="button" @click="onMenuToggle">
       <span></span>
-    </button> -->
+    </button>
 
     <!-- <img class="restaurant-logo" :src="restaurantLogo" draggable="false" alt="Restaurant's Logo"> -->
 

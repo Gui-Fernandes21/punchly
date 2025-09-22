@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 
 // const { 
@@ -54,11 +54,15 @@ const model = ref([
 //   }
 // ]);
 
+const business = useState<Tables<'business'> | null>('business_data');
+
+
 </script>
 
 <template>
   <ul class="layout-menu">
     <div class="menus">
+      <h1 class="text-center text-2xl font-bold text-stone-200 mt-4 mb-12">{{ business?.name }}</h1>
       <template v-for="(item, i) in model" :key="item">
         <AppMenuItem :item="item" root :index="i" />
   

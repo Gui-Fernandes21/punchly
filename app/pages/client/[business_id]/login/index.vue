@@ -18,7 +18,7 @@ const mobile = ref('');
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/punchly-logo.png" alt="Logo" />
+          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
         </div>
       </div>
       <h1>Welcome To Punchly</h1>

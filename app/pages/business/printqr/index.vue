@@ -7,7 +7,8 @@ useHead({
 const business = useState<Tables<'business'> | null>('business_data');
 
 const qrSource = useQrcode('https://gui-fernandes-web.web.app/' + business.value?.id + '/login', {
-  toBase64: true
+  toBase64: true,
+  variant: 'pixelated'
 });
 
 // Convert Base64 SVG to high-resolution PNG and download

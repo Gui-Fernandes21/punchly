@@ -53,16 +53,16 @@ const handleSubmit = async () => {
   const client = useSupabaseClient<Database>();
 
   const { error } = await client
-  .from('business')
-  .update({
-    reward_label: rewardLabel.value,
-    reward_goal: rewardCounter.value,
-    primary_color: swatch.value
-  })
-  .eq('id', business.value.id)
-  .select()
-  .single();
-  
+    .from('business')
+    .update({
+      reward_label: rewardLabel.value,
+      reward_goal: rewardCounter.value,
+      primary_color: swatch.value
+    })
+    .eq('id', business.value.id)
+    .select()
+    .single();
+
   if (error) {
     console.error('Database update error:', error);
     errorModal.showError({
@@ -95,7 +95,7 @@ const handleSubmit = async () => {
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/punchly-logo.png" alt="Logo" />
+          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
         </div>
       </div>
       <h1>Customize Loyalty Card</h1>

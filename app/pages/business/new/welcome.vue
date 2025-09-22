@@ -14,7 +14,6 @@ const router = useRouter();
 const errorModal = useErrorModal();
 
 const handleGoToDashboard = async () => {
-  
   const client = useSupabaseClient<Database>();
   const business = useState<Tables<'business'> | null>('business_data');
 
@@ -26,10 +25,7 @@ const handleGoToDashboard = async () => {
     return;
   }
 
-  const { error } = await client
-    .from('business')
-    .update({ onboarded_at: new Date().toISOString() })
-    .eq('id', business.value.id)
+  const { error } = await client.from('business').update({ onboarded_at: new Date().toISOString() }).eq('id', business.value.id);
 
   if (error) {
     console.error('Error updating business data:', error);
@@ -49,7 +45,7 @@ const handleGoToDashboard = async () => {
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/punchly-logo.png" alt="Logo" />
+          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
         </div>
       </div>
       <h1>Welcome To Punchly!</h1>

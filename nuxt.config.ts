@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     importTheme: { from: '~/theme' }
   },
   supabase: {
-    redirect: false,
+    redirect: true,
     redirectOptions: {
       login: '/business/login',
       callback: '/business/dashboard'

@@ -49,7 +49,7 @@ const handleSubmit = async () => {
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/punchly-logo.png" alt="Logo" />
+          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
         </div>
       </div>
       <h1>Welcome Back</h1>
@@ -58,11 +58,11 @@ const handleSubmit = async () => {
 
     <form @submit.prevent="handleSubmit">
       <FloatLabel variant="on">
-        <InputText size="large" id="email" v-model="email" type="email" />
+        <InputText size="small" id="email" v-model="email" type="email" />
         <label for="email">Email Address</label>
       </FloatLabel>
       <FloatLabel variant="on">
-        <InputText size="large" id="password" v-model="password" type="password" />
+        <InputText size="small" id="password" v-model="password" type="password" />
         <label for="password">Password</label>
       </FloatLabel>
       <Button type="submit">Get Started</Button>
