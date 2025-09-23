@@ -8,6 +8,13 @@ export default defineNuxtConfig({
     importTheme: { from: '~/theme' }
   },
   supabase: {
+    clientOptions: {
+      auth: {
+        flowType: 'implicit',
+        persistSession: true,
+        detectSessionInUrl: true
+      }
+    },
     redirect: false,
     redirectOptions: {
       login: '/business/login',

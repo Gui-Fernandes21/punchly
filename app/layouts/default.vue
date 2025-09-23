@@ -11,6 +11,10 @@ onBeforeUnmount(() => {
   unbindOutsideClickListener();
 });
 
+definePageMeta({
+  middleware: ['new']
+});
+
 const containerClass = computed(() => {
   return [
     {

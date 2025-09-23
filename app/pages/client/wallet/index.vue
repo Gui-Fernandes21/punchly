@@ -11,8 +11,10 @@ useHead({
 const walletOpen = ref(false);
 
 const testAuth = () => {
-  const user = useSupabaseSession();
-  console.log(user.value);
+  const session = useSupabaseSession();
+  const user = useSupabaseUser();
+  console.log('Session:', session.value);
+  console.log('User:', user.value);
 }
 </script>
 

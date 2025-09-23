@@ -33,15 +33,12 @@ onMounted(async () => {
       method: 'post',
       body: { email, type, code }
     });
-
     console.log('Success:', result);
-    const router = useRouter();
-    router.push('/client/wallet');
+    navigateTo('/client/wallet');
   } catch (error) {
     window.history.replaceState({}, '', '/');
     console.error('Error during code exchange:', error);
     showError({ message: 'Failed to verify email. Please try logging in again.' });
-    console.error('Error fetching healthy status:', error);
   }
 });
 </script>
