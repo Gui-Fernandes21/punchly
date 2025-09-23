@@ -9,6 +9,11 @@ useHead({
 });
 
 const walletOpen = ref(false);
+
+const testAuth = () => {
+  const user = useSupabaseSession();
+  console.log(user.value);
+}
 </script>
 
 <template>
@@ -24,7 +29,7 @@ const walletOpen = ref(false);
     <section class="main-content">
       <UIWallet mode="full" />
       <div class="actions">
-        <Button @click="walletOpen = true">Show QR Code</Button>
+        <Button @click="testAuth">Show QR Code</Button>
         <modal-customer-code v-model="walletOpen" />
       </div>
     </section>

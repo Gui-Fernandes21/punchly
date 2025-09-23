@@ -62,18 +62,18 @@ export type Database = {
       client: {
         Row: {
           created_at: string
+          email: string
           id: number
-          phone: string
         }
         Insert: {
           created_at?: string
+          email: string
           id?: number
-          phone: string
         }
         Update: {
           created_at?: string
+          email?: string
           id?: number
-          phone?: string
         }
         Relationships: []
       }

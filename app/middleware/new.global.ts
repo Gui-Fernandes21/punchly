@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   // Public routes that should NOT be gated
-  const PUBLIC_PREFIXES = ['/login', '/auth']; // your customer pages
+  const PUBLIC_PREFIXES = ['/login', '/auth', '/confirm-email']; // your customer pages
   const ONBOARDING_ROUTES = ['/new'];
   if (PUBLIC_PREFIXES.some((p) => to.path.includes(p)) || ONBOARDING_ROUTES.includes(to.path)) return;
 

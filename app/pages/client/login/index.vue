@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { vMaska } from 'maska/vue';
+import { useErrorModal } from '~/composables/ui/useErrorModal';
 
 definePageMeta({
   layout: 'card'
@@ -10,7 +10,32 @@ useHead({
   meta: [{ name: 'description', content: 'Login to Punchly' }]
 });
 
-const mobile = ref('');
+const { showError } = useErrorModal();
+const route = useRoute();
+
+const email = ref('');
+
+const handleSubmit = () => {
+  if (!email.value) {
+    showError({ message: 'Please enter a valid email address.' });
+    return;
+  }
+
+  const client = useSupabaseClient<Database>();
+  const router = useRouter();
+
+  const bizId = route.query.bizId as string;
+
+  client.auth.signInWithOtp({ email: email.value, options: { emailRedirectTo: `${window.location.origin}/client/check-email?=${bizId ? "bizId=" + bizId : ''}` } }).then(({ error }) => {
+    if (error) {
+      console.error('Error sending OTP:', error);
+      showError({ message: 'Failed to send OTP. Please try again.' });
+      return;
+    }
+
+    router.push('/client/confirm-email');
+  });
+};
 </script>
 
 <template>
@@ -22,20 +47,18 @@ const mobile = ref('');
         </div>
       </div>
       <h1>Welcome To Punchly</h1>
-      <p>Enter your mobile number to turn one-time visitors into regulars!</p>
+      <p>Enter your email address to start earning rewards!</p>
     </header>
 
-    <form>
-      <FloatLabel>
-        <InputText v-maska="'(###) ###-####'" size="large" id="mobile" v-model="mobile" type="tel" />
-        <label for="mobile">Mobile Number</label>
+    <form @submit.prevent="handleSubmit">
+      <FloatLabel variant="on">
+        <InputText size="large" id="email" v-model="email" type="email" />
+        <label for="email">Email Address</label>
       </FloatLabel>
       <Button type="submit">Get Started</Button>
     </form>
 
-    <footer>
-      <p>&copy; 2025 Punchly. All rights reserved.</p>
-    </footer>
+    <AppFooter class="footer" />
   </section>
 </template>
 
@@ -62,6 +85,15 @@ const mobile = ref('');
     width: 11rem;
   }
 }
+header {
+  margin-bottom: 1rem;
+}
+header > h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
 section {
   width: 100%;
   height: 100%;
@@ -78,12 +110,18 @@ form {
   width: 100%;
 
   gap: 1rem;
+
+  margin-top: 1rem;
 }
 
 button {
   width: 100%;
   margin-top: 1rem;
   padding: 1rem;
+}
+
+.footer {
+  margin-top: 0;
 }
 
 ::v-deep(.p-floatlabel),

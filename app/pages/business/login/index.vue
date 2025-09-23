@@ -8,7 +8,7 @@ definePageMeta({
 });
 
 useHead({
-  title: 'Login - Punchly',
+  title: 'Merchant Login - Punchly',
   meta: [{ name: 'description', content: 'Login to Punchly' }]
 });
 
