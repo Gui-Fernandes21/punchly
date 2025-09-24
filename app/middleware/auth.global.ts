@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Login routes should NOT be gated
-  const PUBLIC_PREFIXES = ['/login', '/auth', '/confirm-email'];
+  // Routes that should NOT be gated
+  const PUBLIC_PREFIXES = ['/auth', '/confirm-email'];
 
   if (PUBLIC_PREFIXES.some((prefix) => to.path.includes(prefix))) {
     return;
@@ -9,8 +9,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (to.query.code) return;
 
   const supabase = useSupabaseClient<Database>();
+  const session = await supabase.auth.getSession();
 
-  if ((await supabase.auth.getSession()).data.session) return;
+  if (session.data.session) {
+    if (to.path.includes('/business') && to.path.includes('/login')) return navigateTo('/business/dashboard');
+    else if (to.path.includes('/client') && to.path.includes('/login')) return navigateTo('/client/wallet');
+    return;
+  }
+
+  if (to.path.includes('/login')) return;
 
   if (to.path.includes('/business')) return navigateTo('/business/login');
   else if (to.path.includes('/client')) return navigateTo('/client/login');
