@@ -27,14 +27,15 @@ onMounted(async () => {
   const email = route.query.email as string;
   const type = route.query.type as any;
   const code = route.query.code as string | undefined;
+  const redirectTo = route.query.redirectTo as string | undefined;
 
   try {
     const result = await $fetch('/api/auth/register-client', {
       method: 'post',
-      body: { email, type, code }
+      body: { email, type, code, redirectTo }
     });
     console.log('Success:', result);
-    navigateTo('/client/wallet');
+    navigateTo(result.data?.redirectTo || '/client/wallet');
   } catch (error) {
     window.history.replaceState({}, '', '/');
     console.error('Error during code exchange:', error);

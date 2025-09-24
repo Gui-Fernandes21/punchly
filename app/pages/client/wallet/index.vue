@@ -16,6 +16,17 @@ const testAuth = () => {
   console.log('Session:', session.value);
   console.log('User:', user.value);
 }
+
+const logout = async () => {
+  const client = useSupabaseClient<Database>();
+  const { error } = await client.auth.signOut();
+  if (error) {
+    console.error('Error during logout:', error);
+    return;
+  }
+  console.log('Logged out successfully');
+  window.location.href = '/client/login';
+}
 </script>
 
 <template>
@@ -32,6 +43,7 @@ const testAuth = () => {
       <UIWallet mode="full" />
       <div class="actions">
         <Button @click="testAuth">Show QR Code</Button>
+        <Button @click="logout">Logout</Button>
         <modal-customer-code v-model="walletOpen" />
       </div>
     </section>

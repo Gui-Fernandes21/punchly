@@ -4,6 +4,7 @@ import { serverSupabaseServiceRole, serverSupabaseClient } from '#supabase/serve
 type ResponseType = {
   data: {
     session: any;
+    redirectTo: string;
     user?: any;
     message?: string;
   } | null;
@@ -12,11 +13,14 @@ type ResponseType = {
 
 export default defineEventHandler(async (event): Promise<ResponseType> => {
   const body = await readBody(event);
-  const { email, type, code } = body;
+  const { email, type, code, redirectTo } = body;
 
   if (!code) throw createError({ statusCode: 400, statusMessage: 'Code is required' });
   if (!type) throw createError({ statusCode: 400, statusMessage: 'Type is required' });
   if (!email) throw createError({ statusCode: 400, statusMessage: 'Email is required' });
+
+  const businessId = redirectTo ? redirectTo.split('bizId=')[1] || null : null;
+  const redirectUrl = `/client/${businessId ? businessId + '/' : ''}wallet`;
 
   const client = await serverSupabaseClient(event);
 
@@ -39,7 +43,7 @@ export default defineEventHandler(async (event): Promise<ResponseType> => {
   }
 
   if (userExist.data) {
-    return { data: { user: userAuthId, session: data.session, message: 'User already exists' } };
+    return { data: { user: userAuthId, session: data.session, message: 'User already exists', redirectTo: redirectUrl } };
   }
 
   const admin = serverSupabaseServiceRole(event);
@@ -51,5 +55,5 @@ export default defineEventHandler(async (event): Promise<ResponseType> => {
     throw createError({ statusCode: 400, statusMessage: resCreateNewClientError.message });
   }
 
-  return { data: { user: userAuthId, session: data.session, message: 'User created successfully' } };
+  return { data: { user: userAuthId, session: data.session, message: 'User created successfully', redirectTo: redirectUrl } };
 });
