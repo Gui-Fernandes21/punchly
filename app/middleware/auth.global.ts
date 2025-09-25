@@ -12,8 +12,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const session = await supabase.auth.getSession();
 
   if (session.data.session) {
-    if (to.path.includes('/business') && to.path.includes('/login')) return navigateTo('/business/dashboard');
-    else if (to.path.includes('/client') && to.path.includes('/login')) return navigateTo('/client/wallet');
+    if (to.path.includes('/login')) return navigateTo(to.path.replace('/login', '/dashboard'));
     return;
   }
 

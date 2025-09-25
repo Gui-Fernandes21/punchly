@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'card'
+  layout: 'default'
 });
 
 useHead({
@@ -8,7 +8,6 @@ useHead({
   meta: [{ name: 'description', content: 'Manage your wallet and transactions on Punchly' }]
 });
 
-const walletOpen = ref(false);
 
 const testAuth = () => {
   const session = useSupabaseSession();
@@ -31,24 +30,15 @@ const logout = async () => {
 
 <template>
   <section class="page-container">
-    <header>
-      <div class="placeholder">
-        <div class="logo">
-          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
-        </div>
-      </div>
-    </header>
 
     <section class="main-content">
-      <UIWallet mode="full" />
+      <!-- <UIWallet mode="full" /> -->
       <div class="actions">
         <Button @click="testAuth">Show QR Code</Button>
         <Button @click="logout">Logout</Button>
-        <modal-customer-code v-model="walletOpen" />
       </div>
     </section>
 
-    <app-footer />
   </section>
 </template>
 

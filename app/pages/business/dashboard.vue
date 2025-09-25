@@ -4,6 +4,10 @@ useHead({
   meta: [{ name: 'description', content: 'Your business operations dashboard on Punchly' }]
 });
 
+definePageMeta({
+  middleware: ['new']
+})
+
 // COMPOSABLES
 const business = useState<Tables<'business'> | null>('business_data');
 
