@@ -20,7 +20,7 @@ export default defineEventHandler(async (event): Promise<ResponseType> => {
   if (!email) throw createError({ statusCode: 400, statusMessage: 'Email is required' });
 
   const businessId = redirectTo ? redirectTo.split('bizId=')[1] || null : null;
-  const redirectUrl = `/client/${businessId ? businessId + '/' : ''}wallet`;
+  const redirectUrl = `/client/${businessId ? businessId + '/' : ''}dashboard`;
 
   const client = await serverSupabaseClient(event);
 

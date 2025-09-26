@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Analytics } from '@vercel/analytics/nuxt';
 </script>
 
 <template>
@@ -6,6 +7,7 @@
     <!-- <NuxtPage></NuxtPage> -->
   </NuxtLayout>
   <ModalError />
+  <Analytics />
 </template>
 
 <style>

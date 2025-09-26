@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   css: ['~/assets/scss/styles.scss', '~/assets/css/tailwind.css', '~/assets/css/main.css'],
   modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/fonts', '@nuxtjs/supabase', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', 'nuxt-qrcode'],
   primevue: {
-    importTheme: { from: '~/theme' }
+    importTheme: { from: '~/theme' },
+    options: { ripple: true, inputStyle: 'outlined' }
   },
   supabase: {
     clientOptions: {

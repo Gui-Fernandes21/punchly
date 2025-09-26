@@ -77,6 +77,14 @@ const handleScanSuccess = async (data: string) => {
     return;
   }
 
+  const updateResult = await client.from('wallet').update({ last_scan_at: new Date().toISOString() }).eq('id', walletData.id);
+
+  if (updateResult.error) {
+    console.error('Failed to update last scan time:', updateResult.error);
+  } else {
+    console.log('Last scan time updated successfully.');
+  }
+
   console.log('Fetched wallet data:', walletData);
 
   useState<Tables<'wallet'> | null>('customer_wallet', () => walletData);

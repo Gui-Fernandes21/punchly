@@ -16,7 +16,7 @@ const business = useState<Tables<'business'> | null>('business_data');
 //   closeTab(index);
 // }
 
-const businessLogo = computed(() => business.value?.logo_url ? business.value.logo_url : '/layout/images/unknown-user-nobg.png');
+const businessLogo = computed(() => business.value?.logo_url ? business.value.logo_url : '/images/logo/high-quality_punchly-logo.svg');
 
 const avatar = computed(() => {
   const path = '/layout/images/';

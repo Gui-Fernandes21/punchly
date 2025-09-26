@@ -35,7 +35,7 @@ onMounted(async () => {
       body: { email, type, code, redirectTo }
     });
     console.log('Success:', result);
-    navigateTo(result.data?.redirectTo || '/client/wallet');
+    navigateTo(result.data?.redirectTo || '/client/dashboard');
   } catch (error) {
     window.history.replaceState({}, '', '/');
     console.error('Error during code exchange:', error);

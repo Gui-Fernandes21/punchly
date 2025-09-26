@@ -4,9 +4,11 @@ useHead({
   meta: [{ name: 'description', content: 'Print the QR code for your store on Punchly' }]
 });
 
+const config = useRuntimeConfig();
 const business = useState<Tables<'business'> | null>('business_data');
 
-const qrSource = useQrcode('https://gui-fernandes-web.web.app/' + business.value?.id + '/login', {
+
+const qrSource = useQrcode(`${config.public.appUrl}/login?bizId=${business.value?.id}`, {
   toBase64: true,
   variant: 'pixelated'
 });
