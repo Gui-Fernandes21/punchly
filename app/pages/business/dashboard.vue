@@ -6,10 +6,11 @@ useHead({
 
 definePageMeta({
   middleware: ['new']
-})
+});
 
 // COMPOSABLES
 const business = useState<Tables<'business'> | null>('business_data');
+const client = useSupabaseClient<Database>();
 
 // STATE
 const scannerOpen = ref(false);
@@ -20,8 +21,51 @@ const handleOpenScanner = () => {
   scannerOpen.value = !scannerOpen.value;
 };
 
-const handleScanSuccess = (data: any) => {
+const handleScanSuccess = async (data: string) => {
   console.log('Scan successful:', data);
+  if (!data) {
+    console.error('Invalid scan data:', data);
+    return;
+  }
+
+  if (!business.value) {
+    console.error('No business context available for scanning.');
+    return;
+  }
+
+  /**
+   * EXAMPLE DATA STRING EXPECTED
+   * wallet::id=50&userId=1
+   */
+
+  const splitString = data.split('::');
+  if (!splitString || !splitString[0] || splitString[0].trim() !== 'wallet') {
+    console.error('Invalid scan code:', splitString[0]);
+    return;
+  }
+
+  const [walletId, userId] = splitString[1]?.split('&').map((part) => part.split('=')[1]) || [];
+
+  if (!walletId || !userId) {
+    console.error('Invalid wallet or user ID:', walletId, userId);
+    return;
+  }
+
+  const { data: walletData, error } = await client.from('wallet').select('*').eq('id', +walletId).eq('client_id', +userId).eq('business_id', +business.value?.id).single();
+
+
+  if (error) {
+    console.error('Error fetching wallet data:', error);
+    return;
+  }
+
+  if (!walletData) {
+    console.error('No wallet data found for the scanned code.');
+    return;
+  }
+
+  console.log('Fetched wallet data:', walletData);
+
   scannerOpen.value = false;
   modalCustomerCardOpen.value = true;
 };
@@ -32,7 +76,7 @@ const handleScanSuccess = (data: any) => {
     <div class="scanner-container">
       <header>Scan Loyalty Card</header>
       <div class="scanner" @click="handleOpenScanner">
-        <Icon class="icon" name="material-symbols:qr-code-scanner-rounded" size="4rem"  />
+        <Icon class="icon" name="material-symbols:qr-code-scanner-rounded" size="4rem" />
         Open Scanner
       </div>
       <ModalScanner v-model="scannerOpen" @scan:success="handleScanSuccess" />

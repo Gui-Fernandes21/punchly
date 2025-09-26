@@ -19,7 +19,7 @@ function onDetect(detectedCodes: DetectedBarcode[]) {
     return code.rawValue;
   });
 
-  emit('scan:success', result.value);
+  emit('scan:success', result.value[0]);
 }
 
 function onError(err: Error) {

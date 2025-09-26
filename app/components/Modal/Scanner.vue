@@ -32,12 +32,9 @@ const handleError = (error: any) => {
   emit('scan:error', error);
 };
 
-const handleScanSuccess = (detectedCodes: DetectedBarcode[]) => {
-  result.value = detectedCodes.map((code) => {
-    return code.rawValue;
-  });
-  console.log('Scanned data:', result.value);
-  emit('scan:success', result.value);
+const handleScanSuccess = (data: string) => {
+  console.log('Scanned data:', data);
+  emit('scan:success', data);
 };
 </script>
 
