@@ -1,13 +1,68 @@
 <script lang="ts" setup>
+import { tr } from 'zod/v4/locales';
+import { useErrorModal } from '~/composables/ui/useErrorModal';
+
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
 }>();
 
+interface WalletData {
+  businessName: string;
+  rewardLabel: string;
+  punches: number;
+  rewardGoal: number;
+  primaryColor: string;
+}
+
 const props = defineProps<{
   modelValue: boolean;
+  walletData: WalletData;
 }>();
 
+const client = useSupabaseClient<Database>();
+const business = useState<Tables<'business'> | null>('business_data');
+const customerWallet = useState<Tables<'wallet'> | null>('customer_wallet');
+const { showError } = useErrorModal();
+
 const visible = ref<boolean>(props.modelValue);
+
+const decrementPunches = async () => {
+  if (!props.walletData || !business.value || !customerWallet.value) {
+    showError({ message: 'Business context is missing. Cannot update punches.' });
+    return;
+  }
+
+  if (props.walletData.punches > 0) {
+    props.walletData.punches -= 1;
+    customerWallet.value.punches = props.walletData.punches;
+  }
+
+  try {
+    const { error } = await client.from('wallet').update({ punches: customerWallet.value?.punches }).eq('business_id', business.value.id);
+    if (error) throw error;
+  } catch (error) {
+    showError({ message: 'Failed to update punches. Please try again.' });
+  }
+};
+
+const incrementPunches = async () => {
+  if (!props.walletData || !business.value || !customerWallet.value) {
+    showError({ message: 'Business context is missing. Cannot update punches.' });
+    return;
+  }
+
+  if (props.walletData.punches < props.walletData.rewardGoal) {
+    props.walletData.punches += 1;
+    customerWallet.value.punches = props.walletData.punches;
+  }
+
+  try {
+    const { error } = await client.from('wallet').update({ punches: customerWallet.value?.punches }).eq('business_id', business.value.id);
+    if (error) throw error;
+  } catch (error) {
+    showError({ message: 'Failed to update punches. Please try again.' });
+  }
+};
 
 watch(
   () => props.modelValue,
@@ -33,15 +88,15 @@ watch(visible, (newVal) => {
         </header>
 
         <section class="scanner-canvas font-bold text-2xl block mb-2 mt-6">
-          <UIWallet mode="compact" />
+          <UIWallet mode="compact" :card-data="walletData" />
         </section>
 
         <section class="actions">
-          <Button class="w-full" severity="secondary" @click="closeCallback">
+          <Button class="w-full" severity="secondary" @click="decrementPunches">
             <Icon name="gg:math-minus" size="1.7rem" />
             Punch
           </Button>
-          <Button class="w-full" @click="closeCallback">
+          <Button class="w-full" @click="incrementPunches">
             <Icon name="gg:math-plus" size="1.7rem" />
             Punch
           </Button>

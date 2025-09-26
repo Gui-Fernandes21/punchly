@@ -25,8 +25,9 @@ const handleSubmit = () => {
   const router = useRouter();
 
   const bizId = route.query.bizId as string;
+  const config = useRuntimeConfig();
 
-  client.auth.signInWithOtp({ email: email.value, options: { emailRedirectTo: `${window.location.origin}/client/check-email?=${bizId ? "bizId=" + bizId : ''}` } }).then(({ error }) => {
+  client.auth.signInWithOtp({ email: email.value, options: { emailRedirectTo: `${config.public.appUrl}/client/check-email?=${bizId ? "bizId=" + bizId : ''}` } }).then(({ error }) => {
     if (error) {
       console.error('Error sending OTP:', error);
       showError({ message: 'Failed to send OTP. Please try again.' });

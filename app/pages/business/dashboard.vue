@@ -10,16 +10,30 @@ definePageMeta({
 
 // COMPOSABLES
 const business = useState<Tables<'business'> | null>('business_data');
+const customerWallet = useState<Tables<'wallet'> | null>('customer_wallet');
 const client = useSupabaseClient<Database>();
 
 // STATE
 const scannerOpen = ref(false);
 const modalCustomerCardOpen = ref(false);
 
+
+// COMPUTED
+const walletData = computed(() => {
+  const data = {
+    businessName: business.value?.name || '',
+    rewardLabel: business.value?.reward_label || '',
+    punches: customerWallet.value?.punches || 0,
+    rewardGoal: business.value?.reward_goal || 10,
+    primaryColor: business.value?.primary_color || '#14ABB7'
+  }
+  return data;
+});
+
 // METHODS
-const handleOpenScanner = () => {
+function handleOpenScanner() {
   scannerOpen.value = !scannerOpen.value;
-};
+}
 
 const handleScanSuccess = async (data: string) => {
   console.log('Scan successful:', data);
@@ -53,7 +67,6 @@ const handleScanSuccess = async (data: string) => {
 
   const { data: walletData, error } = await client.from('wallet').select('*').eq('id', +walletId).eq('client_id', +userId).eq('business_id', +business.value?.id).single();
 
-
   if (error) {
     console.error('Error fetching wallet data:', error);
     return;
@@ -66,6 +79,7 @@ const handleScanSuccess = async (data: string) => {
 
   console.log('Fetched wallet data:', walletData);
 
+  useState<Tables<'wallet'> | null>('customer_wallet', () => walletData);
   scannerOpen.value = false;
   modalCustomerCardOpen.value = true;
 };
@@ -80,7 +94,7 @@ const handleScanSuccess = async (data: string) => {
         Open Scanner
       </div>
       <ModalScanner v-model="scannerOpen" @scan:success="handleScanSuccess" />
-      <ModalCustomerWallet v-model="modalCustomerCardOpen" />
+      <ModalCustomerWallet v-model="modalCustomerCardOpen" :wallet-data="walletData" />
     </div>
 
     <Divider class="my-6" />
