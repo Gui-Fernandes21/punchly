@@ -5,6 +5,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   modelValue: boolean;
+  qrData: string;
 }>();
 
 const visible = ref<boolean>(props.modelValue);
@@ -32,7 +33,8 @@ watch(visible, (newVal) => {
         </header>
 
         <div class="code-container font-bold text-2xl block mb-2 mt-6">
-          <img class="scan-guide" src="/images/qr-demo.png" alt="Customer QR Code" />
+          <!-- <img class="scan-guide" src="/images/qr-demo.png" alt="Customer QR Code" /> -->
+           <Qrcode :value="qrData" variant="pixelated" />
         </div>
 
         <div class="flex w-full gap-2">

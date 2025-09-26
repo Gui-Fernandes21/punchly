@@ -13,8 +13,6 @@ definePageMeta({
 
       const bizId = to.params.business_id as string;
 
-      console.log(bizId);
-
       if (!user.value) {
         console.warn('User not logged in, cannot fetch business data.');
         return;
@@ -54,8 +52,23 @@ const cardData = ref({
   primaryColor: business.value?.primary_color || '#14ABB7'
 });
 
-const testAuth = () => {
-  console.log(business);
+const qrModal = ref(false);
+
+const walletQrCodeString = computed(() => {
+  const walletId = wallet.value?.id;
+  if (!walletId) {
+    console.error('No wallet ID available to generate QR code.');
+    return;
+  }
+  return `wallet::id=${walletId}&userId=${wallet.value?.client_id}`;
+});
+
+const openQrModal = () => {
+  if (!walletQrCodeString.value) {
+    console.error('Cannot open QR modal without a valid QR code string.');
+    return;
+  }
+  qrModal.value = true;
 };
 
 const logout = async () => {
@@ -83,9 +96,10 @@ const logout = async () => {
     <section class="main-content">
       <UIWallet mode="full" :card-data="cardData" />
       <div class="actions">
-        <Button @click="testAuth">Show QR Code</Button>
+        <Button @click="openQrModal">Show QR Code</Button>
         <Button @click="logout">Logout</Button>
       </div>
+      <ModalCustomerCode v-model="qrModal" :qr-data="walletQrCodeString || ''" />
     </section>
 
     <app-footer />
