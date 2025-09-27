@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { tr } from 'zod/v4/locales';
 import { useErrorModal } from '~/composables/ui/useErrorModal';
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
+  (e: 'reward-claimed', value: boolean): void;
 }>();
 
 interface WalletData {
@@ -25,6 +25,8 @@ const customerWallet = useState<Tables<'wallet'> | null>('customer_wallet');
 const { showError } = useErrorModal();
 
 const visible = ref<boolean>(props.modelValue);
+
+const rewardClaimable = computed(() => props.walletData.punches >= props.walletData.rewardGoal);
 
 const decrementPunches = async () => {
   if (!props.walletData || !business.value || !customerWallet.value) {
@@ -78,6 +80,38 @@ const incrementPunches = async () => {
   }
 };
 
+const claimReward = async () => {
+  if (!props.walletData || !business.value || !customerWallet.value || !rewardClaimable.value) {
+    showError({ message: 'Business context is missing. Cannot claim reward.' });
+    return;
+  }
+
+  if (props.walletData.punches === props.walletData.rewardGoal) {
+    props.walletData.punches = 0;
+    customerWallet.value.punches = 0;
+  } else {
+    showError({ message: 'Not enough punches to claim reward.' });
+    return;
+  }
+
+  try {
+    const { error } = await client.from('wallet').update({ punches: customerWallet.value?.punches }).eq('business_id', business.value.id);
+    if (error) throw error;
+    const eventResult = await client.from('events').insert({
+      type: 'redeem',
+      wallet_id: customerWallet.value.id,
+      new_punches: customerWallet.value.punches || 0,
+      delta: -props.walletData.rewardGoal
+    });
+    if (eventResult.error) throw eventResult.error;
+    visible.value = false;
+    emit('update:modelValue', false);
+    emit('reward-claimed', true);
+  } catch (error) {
+    showError({ message: 'Failed to claim reward. Please try again.' });
+  }
+};
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -85,7 +119,7 @@ watch(
   }
 );
 
-watch(visible, (newVal) => {
+watch(() => visible.value, (newVal) => {
   if (newVal !== props.modelValue) {
     emit('update:modelValue', newVal);
   }
@@ -114,7 +148,7 @@ watch(visible, (newVal) => {
             <Icon name="gg:math-plus" size="1.7rem" />
             Punch
           </Button>
-          <Button class="claim-btn w-full" disabled label="Claim Reward" @click="closeCallback"></Button>
+          <Button class="claim-btn w-full" :disabled="!rewardClaimable" @click="claimReward">Claim Reward</Button>
         </section>
       </div>
     </template>
@@ -145,6 +179,8 @@ button {
   grid-column: span 2;
   background-color: #ffd700;
   border: 1px solid #ffd700;
+  color: #c2410c;
+  font-weight: 500;
 
   &:disabled {
     background: #ffe866;

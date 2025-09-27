@@ -16,6 +16,7 @@ const client = useSupabaseClient<Database>();
 // STATE
 const scannerOpen = ref(false);
 const modalCustomerCardOpen = ref(false);
+const modalRewardClaimedOpen = ref(false);
 const activeWalletsCount = ref(0);
 const stampsTodayCount = ref(0);
 const rewardsClaimedCount = ref(0);
@@ -117,12 +118,17 @@ const loadBusinessMetrics = async () => {
   const stampsToday = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'add').gte('created_at', new Date(new Date().setHours(0, 0, 0, 0)).toISOString());
   const rewardsClaimed = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'redeem');
 
-  console.log(stampsToday);
-  
-
   activeWalletsCount.value = activeWallets.count || 0;
   stampsTodayCount.value = stampsToday.count || 0;
   rewardsClaimedCount.value = rewardsClaimed.count || 0;
+};
+
+const handleRewardClaimed = async (claimed: boolean) => {
+  if (claimed) {
+    modalCustomerCardOpen.value = false;
+    modalRewardClaimedOpen.value = true;
+    await loadBusinessMetrics();
+  }
 };
 
 onMounted(() => {
@@ -139,7 +145,8 @@ onMounted(() => {
         Open Scanner
       </div>
       <ModalScanner v-model="scannerOpen" @scan:success="handleScanSuccess" />
-      <ModalCustomerWallet v-model="modalCustomerCardOpen" :wallet-data="walletData" />
+      <ModalCustomerWallet v-model="modalCustomerCardOpen" @reward-claimed="handleRewardClaimed" :wallet-data="walletData" />
+      <ModalRewardClaimed v-model="modalRewardClaimedOpen" :business="business" />
     </div>
 
     <Divider class="my-6" />

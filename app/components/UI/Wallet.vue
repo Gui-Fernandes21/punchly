@@ -37,6 +37,41 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
+const punchStyle = (index: number) => {
+  let backgroundColor = '#e0e0e0';
+  let borderRadius = '50%';
+  let color = '#000';
+
+  if (!walletData.value) return { backgroundColor: '#e0e0e0' };
+  
+  if (index < walletData.value.punches) {
+    backgroundColor = walletData.value.primaryColor;
+  }
+
+  if (index === walletData.value.rewardGoal - 1 && walletData.value.rewardGoal - walletData.value.punches <= 0) {
+    borderRadius = '12px';
+    color = '#f2943b';
+    backgroundColor = '#fbe082'; // golden color for reward
+  }
+
+  return {
+    backgroundColor,
+    borderRadius,
+    color
+  };
+};
+
+/**
+ * GOLDEN COLORS
+ * #fbe082
+ * #f2943b
+ * #f8d79a
+ * 
+ * Give me bright golden colors for a reward icon
+ * - #ffd700
+ * - #ffecb3
+ */
 </script>
 
 <template>
@@ -46,8 +81,8 @@ watch(
     </header>
     <div class="content">
       <div class="wallet-grid">
-        <div v-for="(n, index) in walletData.rewardGoal" :key="index" class="punch" :style="{ backgroundColor: n <= walletData.punches ? walletData.primaryColor : '#e0e0e0' }">
-          <Icon v-if="n == walletData.rewardGoal" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
+        <div v-for="(n, index) in walletData.rewardGoal" :key="index" class="punch" :style="punchStyle(index)">
+          <Icon v-if="n == walletData.rewardGoal" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon"/>
         </div>
       </div>
 
