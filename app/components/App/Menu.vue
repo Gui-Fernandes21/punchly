@@ -6,7 +6,7 @@ import { ref } from 'vue';
 //   triggerLogout 
 // } = useFirebaseAuth();
 
-const router = useRouter();
+const route = useRoute();
 
 const askLogout = async () => {
   // triggerLogout();
@@ -20,17 +20,17 @@ const model = ref([
   },
   {
     label: 'Customize Loyalty Card',
-    icon: 'pi pi-map',
+    icon: 'pi pi-pen-to-square',
     to: '/business/customize-card',
   },
   {
     label: 'Print Store QR Code',
-    icon: 'pi pi-tag',
+    icon: 'pi pi-print',
     to: '/business/printqr',
   },
   {
     label: 'Contact Support',
-    icon: 'pi pi-ticket',
+    icon: 'pi pi-headphones',
     to: '/business/support',
   },
 ]);

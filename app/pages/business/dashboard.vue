@@ -114,10 +114,9 @@ const handleScanSuccess = async (data: string) => {
 const loadBusinessMetrics = async () => {
   if (!business.value) return;
 
-  const activeWallets = await client.from('wallet').select('id', { count: 'exact' }).eq('business_id', business.value.id);
-  const stampsToday = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'add').gte('created_at', new Date(new Date().setHours(0, 0, 0, 0)).toISOString());
-  const rewardsClaimed = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'redeem');
-
+  const activeWallets = await client.from('wallet').select('id', { count: 'exact', head: true }).eq('business_id', business.value.id);
+  const stampsToday = await client.from('events').select('id, wallet (business_id)', { count: 'exact', head: true }).eq('wallet.business_id', business.value.id).eq('type', 'add').gte('created_at', new Date(new Date().setHours(0, 0, 0, 0)).toISOString());
+  const rewardsClaimed = await client.from('events').select('id, wallet (business_id)', { count: 'exact', head: true }).eq('wallet.business_id', business.value.id).eq('type', 'redeem');
   activeWalletsCount.value = activeWallets.count || 0;
   stampsTodayCount.value = stampsToday.count || 0;
   rewardsClaimedCount.value = rewardsClaimed.count || 0;

@@ -16,7 +16,7 @@ const business = useState<Tables<'business'> | null>('business_data');
 //   closeTab(index);
 // }
 
-const businessLogo = computed(() => business.value?.logo_url ? business.value.logo_url : '/images/logo/high-quality_punchly-logo.svg');
+const businessLogo = computed(() => business.value?.logo_url && route.path.startsWith('/business') ? business.value.logo_url : '/images/logo/high-quality_punchly-logo.svg');
 
 const avatar = computed(() => {
   const path = '/layout/images/';
@@ -36,6 +36,7 @@ const avatar = computed(() => {
 // };
 
 const showProfileDrawer = ref(false);
+
 const closeProfileDrawer = () => {
   showProfileDrawer.value = false;
 };
@@ -46,25 +47,24 @@ const handleLogout = async () => {
   if (error) {
     console.error('Error signing out:', error.message);
   } else {
-    const router = useRouter();
-    router.push('/business/login');
+    useState('customer_wallet', () => null);
+    useState('business_data', () => null);
+    useState('wallet_data', () => null);
+
+    if (route.path.startsWith('/client')) {
+      navigateTo('/client/login');
+    } else if (route.path.startsWith('/business')) {
+      navigateTo('/business/login');
+    }
   }
 };
 </script>
 
 <template>
   <div class="layout-topbar">
-    <NuxtLink to="/" class="app-logo">
-      <h4 class="font-bold lg:leading-normal leading-normal text-2xl lg:text-6xl mb-5 text-white">
-        <span class="font-playwrite text-white text-3xl inline-flex py-3">Menutz</span>
-      </h4>
-    </NuxtLink>
-
-    <button ref="menubutton" class="topbar-menubutton" type="button" @click="onMenuToggle">
+    <button ref="menubutton" class="topbar-menubutton" type="button" @click="onMenuToggle" v-if="route.path.startsWith('/business')">
       <span></span>
     </button>
-
-    <!-- <img class="restaurant-logo" :src="restaurantLogo" draggable="false" alt="Restaurant's Logo"> -->
 
     <!-- <ul class="topbar-menu">
       <li v-for="(item, i) in tabs" :key="i">
@@ -100,7 +100,9 @@ const handleLogout = async () => {
       <NuxtLink to="/business/dashboard" class="navigation-link"> <i class="pi pi-chevron-left"></i> back </NuxtLink>
     </div>
 
-    <div @click="handleLogout" class="topbar-profile" v-if="route.path.includes('/dashboard')">
+
+
+    <div class="topbar-profile" v-if="route.path.includes('/dashboard')">
       <img class="topbar-profile-button" :src="businessLogo" alt="business_logo" />
 
       <!-- <button type="button" 
@@ -124,12 +126,33 @@ const handleLogout = async () => {
         </ClientOnly>
       </button>     -->
     </div>
+    
+    <Button class="logout-btn" @click="handleLogout">
+      <i class="pi pi-sign-out"></i>
+      Sign Out
+    </Button>
   </div>
 </template>
 
 <style scoped>
 .layout-topbar {
   padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap !important;
+}
+.logout-btn {
+  margin: 0;
+  display: block;
+  width: auto;
+
+  border: 1px solid #fff;
+  background: transparent;
+
+  &:hover, &:focus {
+    background: #fff;
+    color: #078590;
+  }
 }
 .navigation-container {
   display: flex;
