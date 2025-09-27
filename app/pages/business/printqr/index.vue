@@ -12,7 +12,7 @@ const config = useRuntimeConfig();
 const business = useState<Tables<'business'> | null>('business_data');
 
 
-const qrSource = useQrcode(`${config.public.appUrl}/login?bizId=${business.value?.id}`, {
+const qrSource = useQrcode(`${config.public.appUrl}/client/login?bizId=${business.value?.id}`, {
   toBase64: true,
   variant: 'pixelated'
 });
