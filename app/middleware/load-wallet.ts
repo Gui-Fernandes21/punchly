@@ -7,11 +7,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const supabase = useSupabaseClient<Database>();
 
-  const user = useSupabaseUser();
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-  if (!user.value) return showError({ header: 'Not Logged In', message: 'You must be logged in to access this page' });
+  if (sessionError || !session?.user?.id) return showError({ header: 'Not Logged In', message: 'You must be logged in to access this page' });
 
-  const client = await supabase.from('client').select('*').eq('auth_id', user.value.id).single();
+  const client = await supabase.from('client').select('*').eq('auth_id', session?.user.id).single();
 
   if (client.error || !client.data) return showError({ header: 'Client Not Found', message: 'No client record found for the logged-in user' });
 
