@@ -12,8 +12,13 @@ useHead({
 
 const { showError } = useErrorModal();
 const route = useRoute();
+const supabase = useSupabaseClient<Database>();
+const business = useState<Tables<'business'> | null>('business_data');
 
 const email = ref('');
+const logoUrl = computed<string>(() => business.value?.logo_url || '/images/logo/high-quality_punchly-logo.png');
+const headerCopy = computed<string>(() => business.value ? `${business.value.name} Rewards` : 'Welcome To Punchly');
+
 
 const handleSubmit = () => {
   if (!email.value) {
@@ -21,22 +26,36 @@ const handleSubmit = () => {
     return;
   }
 
-  const client = useSupabaseClient<Database>();
-  const router = useRouter();
-
   const bizId = route.query.bizId as string;
   const config = useRuntimeConfig();
 
-  client.auth.signInWithOtp({ email: email.value, options: { emailRedirectTo: `${config.public.appUrl}/client/check-email?=${bizId ? "bizId=" + bizId : ''}` } }).then(({ error }) => {
+  supabase.auth.signInWithOtp({ email: email.value, options: { emailRedirectTo: `${config.public.appUrl}/client/check-email?=${bizId ? 'bizId=' + bizId : ''}` } }).then(({ error }) => {
     if (error) {
       console.error('Error sending OTP:', error);
       showError({ message: 'Failed to send OTP. Please try again.' });
       return;
     }
 
-    router.push('/client/confirm-email');
+    navigateTo('/client/confirm-email');
   });
 };
+
+const fetchBusiness = async (): Promise<Tables<'business'> | null> => {
+  if (!route.query.bizId) return null;
+  const business = useState<Tables<'business'> | null>('business_data');
+
+  if (business.value) return business.value;
+
+  const { data } = await supabase.from('business').select('*').eq('id', +route.query.bizId).single();
+  
+  return data || null;
+};
+
+onMounted(async () => {
+  if (route.query.bizId && !business.value) {
+    business.value = await fetchBusiness();
+  }
+});
 </script>
 
 <template>
@@ -44,10 +63,10 @@ const handleSubmit = () => {
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
+          <img :src="logoUrl" alt="Logo" />
         </div>
       </div>
-      <h1>Welcome To Punchly</h1>
+      <h1>{{ headerCopy }}</h1>
       <p>Enter your email address to start earning rewards!</p>
     </header>
 
@@ -56,7 +75,7 @@ const handleSubmit = () => {
         <InputText size="large" id="email" v-model="email" type="email" />
         <label for="email">Email Address</label>
       </FloatLabel>
-      <Button type="submit">Get Started</Button>
+      <Button type="submit" :style="{ backgroundColor: business?.primary_color || '#14ABB7', color: '#fff' }">Get Started</Button>
     </form>
 
     <AppFooter class="footer" />

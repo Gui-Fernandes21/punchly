@@ -12,6 +12,7 @@ useHead({
 
 const { showError } = useErrorModal();
 const route = useRoute();
+const business = useState<Tables<'business'> | null>('business_data');
 
 onMounted(async () => {
   if (!route.query.code) return;
@@ -49,7 +50,7 @@ onMounted(async () => {
     <header>
       <div class="placeholder">
         <div class="logo">
-          <img src="/images/logo/high-quality_punchly-logo.png" alt="Logo" />
+          <img :src="business?.logo_url || '/images/logo/high-quality_punchly-logo.png'" alt="Logo" />
         </div>
       </div>
       <h1>Check Your Email</h1>

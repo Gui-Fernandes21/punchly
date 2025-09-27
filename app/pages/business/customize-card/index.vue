@@ -7,6 +7,10 @@ useHead({
   meta: [{ name: 'description', content: 'Print the QR code for your store on Punchly' }]
 });
 
+definePageMeta({
+  middleware: ['new']
+});
+
 const business = useState<Tables<'business'> | null>('business_data');
 const toast = useToast();
 

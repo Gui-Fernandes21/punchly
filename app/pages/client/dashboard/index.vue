@@ -1,52 +1,215 @@
 <script lang="ts" setup>
+/**
+ * Client Dashboard Page
+ *
+ * IMPROVEMENT NOTES:
+ * - Decrease amount of data fetched on initial load for better performance (look at client data fetch).
+ */
+
 useHead({
   title: 'My Wallets - Punchly',
   meta: [{ name: 'description', content: 'View and manage your loyalty cards on Punchly' }]
 });
 
 // Placeholder data - replace with your actual data
-const wallets = ref([
+const allWallets = ref([
   {
     id: 1,
-    businessName: "Joe's Coffee Shop",
     punches: 8,
-    rewardGoal: 10,
-    rewardLabel: "Free Large Coffee",
-    primaryColor: "#8B4513",
-    logo: "/images/logo/punchly-logo.png"
+    business: {
+      name: "Joe's Coffee Shop",
+      reward_goal: 10,
+      reward_label: 'Free Large Coffee',
+      primary_color: '#8B4513',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
   },
   {
     id: 2,
-    businessName: "Pizza Palace",
     punches: 3,
-    rewardGoal: 5,
-    rewardLabel: "Free Personal Pizza",
-    primaryColor: "#DC143C",
-    logo: "/images/logo/punchly-logo.png"
+    business: {
+      name: 'Pizza Palace',
+      reward_goal: 5,
+      reward_label: 'Free Personal Pizza',
+      primary_color: '#DC143C',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
   },
   {
     id: 3,
-    businessName: "Smoothie Station",
-    punches: 12,
-    rewardGoal: 8,
-    rewardLabel: "Free Large Smoothie",
-    primaryColor: "#32CD32",
-    logo: "/images/logo/punchly-logo.png"
+    punches: 8,
+    business: {
+      name: 'Smoothie Station',
+      reward_goal: 8,
+      reward_label: 'Free Large Smoothie',
+      primary_color: '#32CD32',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
+  },
+  {
+    id: 4,
+    punches: 5,
+    business: {
+      name: 'Burger Barn',
+      reward_goal: 10,
+      reward_label: 'Free Burger Combo',
+      primary_color: '#FF6B35',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
+  },
+  {
+    id: 5,
+    punches: 2,
+    business: {
+      name: 'Tea Time',
+      reward_goal: 6,
+      reward_label: 'Free Premium Tea',
+      primary_color: '#4ECDC4',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
+  },
+  {
+    id: 6,
+    punches: 7,
+    business: {
+      name: 'Donut Delights',
+      reward_goal: 8,
+      reward_label: 'Free Dozen Donuts',
+      primary_color: '#FFD93D',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
+  },
+  {
+    id: 7,
+    punches: 10,
+    business: {
+      name: 'Sushi Express',
+      reward_goal: 12,
+      reward_label: 'Free Sushi Roll',
+      primary_color: '#E74C3C',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
+  },
+  {
+    id: 8,
+    punches: 4,
+    business: {
+      name: 'Ice Cream Corner',
+      reward_goal: 7,
+      reward_label: 'Free Sundae',
+      primary_color: '#F39C12',
+      logo_url: '/images/logo/punchly-logo.png'
+    }
   }
 ]);
+
+const WALLET_QUERY = `
+      id,
+      punches,
+      business!inner (
+        id,
+        name,
+        reward_label,
+        reward_goal,
+        primary_color,
+        logo_url
+      )
+    `;
+
+const supabase = useSupabaseClient<Database>();
+const user = useSupabaseUser();
 
 const searchQuery = ref('');
 const isLoading = ref(false);
 
+// Pagination variables
+const currentPage = ref(0);
+const itemsPerPage = ref(6);
+const totalItems = ref(0);
+
+// Computed property for paginated wallets
+const paginatedWallets = computed(() => {
+  const start = currentPage.value * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return allWallets.value.slice(start, end);
+});
+
+const notFoundSearchCopy = computed(() => {
+  if (searchQuery.value.trim() === '') {
+    return { header: 'No wallets found.', paragraph: 'Start collecting loyalty points by visiting participating businesses!' };
+  } else {
+    return { header: `No wallets found for "${searchQuery.value}".`, paragraph: 'Try a different search term.' };
+  }
+});
+
 // Leave empty for your integration
 const handleSearch = () => {
-  // Your search logic here
+  // Reset to first page when searching
+  currentPage.value = 0;
+  searchWalletByBusinessName(searchQuery.value);
 };
 
-const onWalletClick = (wallet: any) => {
-  // Your wallet click logic here
-  console.log('Wallet clicked:', wallet);
+const onPageChange = (event: any) => {
+  currentPage.value = event.page;
+  // You can add scroll to top or loading logic here
 };
+
+const onWalletClick = (wallet: any) => navigateTo(`/client/${wallet.business.id}/wallet/`);
+const getProgressPercentage = (wallet: any) => (wallet.punches / wallet.business.reward_goal) * 100;
+const getRoundedPercentage = (wallet: any) => Math.min(100, Math.max(0, Math.round(getProgressPercentage(wallet) * 10) / 10));
+
+const searchWalletByBusinessName = async (businessName: string) => {
+  if (!businessName.trim()) return fetchAllWallets();
+
+  try {
+    const clientResult = await supabase
+      .from('client')
+      .select('id')
+      .eq('auth_id', user.value?.id as string)
+      .single();
+
+    if (clientResult.error) throw clientResult.error;
+
+    const { data, error } = await supabase.from('wallet').select(WALLET_QUERY).eq('client_id', +clientResult.data.id).ilike('business.name', `%${businessName}%`);
+
+    if (error) throw error;
+    allWallets.value = data as any[];
+  } catch (error) {
+    console.error('Error searching wallets:', error);
+  }
+};
+
+const fetchAllWallets = async () => {
+  try {
+    const clientResult = await supabase
+      .from('client')
+      .select('id')
+      .eq('auth_id', user.value?.id as string)
+      .single();
+
+    if (clientResult.error) throw clientResult.error;
+
+    const { data, error } = await supabase.from('wallet').select(WALLET_QUERY).eq('client_id', +clientResult.data.id);
+
+    if (error) throw error;
+    allWallets.value = data as any[];
+  } catch (error) {
+    console.error('Error fetching wallets:', error);
+  }
+};
+
+// Update total items when wallets change
+watch(
+  allWallets,
+  (newWallets) => {
+    totalItems.value = newWallets.length;
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  fetchAllWallets();
+});
 </script>
 
 <template>
@@ -64,12 +227,7 @@ const onWalletClick = (wallet: any) => {
           <InputIcon>
             <Icon name="material-symbols:search" />
           </InputIcon>
-          <InputText 
-            v-model="searchQuery"
-            placeholder="Search businesses..."
-            class="search-input"
-            @input="handleSearch"
-          />
+          <InputText v-model="searchQuery" placeholder="Search businesses..." class="search-input" @input="handleSearch" />
         </IconField>
       </div>
     </div>
@@ -82,25 +240,15 @@ const onWalletClick = (wallet: any) => {
 
     <!-- Wallets Grid -->
     <div v-else class="wallets-grid">
-      <Card 
-        v-for="wallet in wallets" 
-        :key="wallet.id"
-        class="wallet-card"
-        @click="onWalletClick(wallet)"
-      >
+      <Card v-for="wallet in paginatedWallets" :key="wallet.id" class="wallet-card" @click="onWalletClick(wallet)">
         <template #content>
           <div class="wallet-content">
             <!-- Business Logo & Info -->
             <div class="wallet-header">
-              <Avatar 
-                :image="wallet.logo" 
-                size="large" 
-                shape="circle"
-                class="business-logo"
-              />
+              <Avatar :image="wallet.business.logo_url || '/images/logo/high-quality_punchly-logo.png'" size="large" shape="circle" class="business-logo" />
               <div class="business-info">
-                <h3 class="business-name">{{ wallet.businessName }}</h3>
-                <p class="reward-label">{{ wallet.rewardLabel }}</p>
+                <h3 class="business-name">{{ wallet.business.name }}</h3>
+                <p class="reward-label">{{ wallet.business.reward_label }}</p>
               </div>
             </div>
 
@@ -109,52 +257,37 @@ const onWalletClick = (wallet: any) => {
               <div class="progress-info">
                 <span class="punches">{{ wallet.punches }}</span>
                 <span class="separator">/</span>
-                <span class="goal">{{ wallet.rewardGoal }}</span>
+                <span class="goal">{{ wallet.business.reward_goal }}</span>
               </div>
-              <ProgressBar 
-                :value="(wallet.punches / wallet.rewardGoal) * 100" 
-                class="progress-bar"
-                :style="{ '--primary-color': wallet.primaryColor }"
-              />
+              <ProgressBar :value="getProgressPercentage(wallet)" class="progress-bar" :style="{ '--primary-color': wallet.business.primary_color }">{{ getRoundedPercentage(wallet) }}%</ProgressBar>
               <p class="progress-text">
-                {{ wallet.rewardGoal - wallet.punches > 0 
-                  ? `${wallet.rewardGoal - wallet.punches} more to go!` 
-                  : 'Reward ready!' 
-                }}
+                {{ wallet.business.reward_goal - wallet.punches > 0 ? `${wallet.business.reward_goal - wallet.punches} more to go!` : 'Reward ready!' }}
               </p>
             </div>
 
             <!-- Status Badge -->
             <div class="status-badge">
-              <Tag 
-                v-if="wallet.punches >= wallet.rewardGoal"
-                value="Reward Ready!" 
-                severity="success" 
-                icon="material-symbols:check-circle"
-              />
-              <Tag 
-                v-else
-                :value="`${wallet.rewardGoal - wallet.punches} punches left`" 
-                severity="info"
-              />
+              <Tag v-if="wallet.punches >= wallet.business.reward_goal" value="Reward Ready!" severity="success" icon="pi pi-check-circle" />
+              <Tag v-else :value="`${wallet.business.reward_goal - wallet.punches} punches left`" severity="info" />
             </div>
           </div>
         </template>
       </Card>
     </div>
 
+    <!-- Pagination -->
+    <div v-if="!isLoading && totalItems > itemsPerPage" class="pagination-container">
+      <Paginator :first="currentPage * itemsPerPage" :rows="itemsPerPage" :totalRecords="totalItems" :rowsPerPageOptions="[6, 12, 24]" @page="onPageChange" class="custom-paginator" />
+    </div>
+
     <!-- Empty State -->
-    <div v-if="!isLoading && wallets.length === 0" class="empty-state">
+    <div v-if="!isLoading && allWallets.length === 0" class="empty-state">
       <div class="empty-icon">
         <Icon name="material-symbols:wallet" size="4rem" />
       </div>
-      <h3>No wallets found</h3>
-      <p>Start collecting loyalty points by visiting participating businesses!</p>
-      <Button 
-        label="Find Businesses" 
-        icon="material-symbols:search"
-        class="find-businesses-btn"
-      />
+      <h3>{{ notFoundSearchCopy.header }}</h3>
+      <p>{{ notFoundSearchCopy.paragraph }}</p>
+      <Button label="Find Businesses" icon="material-symbols:search" class="find-businesses-btn" />
     </div>
   </div>
 </template>
@@ -380,5 +513,80 @@ const onWalletClick = (wallet: any) => {
 
 .find-businesses-btn {
   padding: 0.75rem 2rem;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 1rem 0;
+}
+
+.custom-paginator {
+  border: none;
+  background: transparent;
+}
+
+.custom-paginator :deep(.p-paginator-content) {
+  flex-wrap: nowrap;
+}
+
+.custom-paginator :deep(.p-paginator-pages) {
+  gap: 0.5rem;
+}
+
+.custom-paginator :deep(.p-paginator-page) {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.custom-paginator :deep(.p-paginator-page:hover) {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+}
+
+.custom-paginator :deep(.p-paginator-page.p-highlight) {
+  background-color: var(--primary-500);
+  color: white;
+  border-color: var(--primary-500);
+}
+
+.custom-paginator :deep(.p-paginator-prev),
+.custom-paginator :deep(.p-paginator-next) {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  margin: 0 0.25rem;
+}
+
+.custom-paginator :deep(.p-dropdown) {
+  border-radius: 8px;
+}
+
+/* Mobile pagination adjustments */
+@media (max-width: 640px) {
+  .custom-paginator :deep(.p-paginator-rpp-options) {
+    display: none;
+  }
+
+  .custom-paginator :deep(.p-paginator-pages) {
+    gap: 0.25rem;
+  }
+
+  .custom-paginator :deep(.p-paginator-page) {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .custom-paginator :deep(.p-paginator-prev),
+  .custom-paginator :deep(.p-paginator-next) {
+    min-width: 2rem;
+    height: 2rem;
+  }
 }
 </style>

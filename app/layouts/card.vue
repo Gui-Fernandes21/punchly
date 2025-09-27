@@ -1,6 +1,10 @@
+<script lang="ts" setup>
+const business = useState<Tables<'business'> | null>('business_data');
+</script>
+
 <template>
   <div class="layout-container">
-    <div class="layout-card mt-4">
+    <div class="layout-card mt-4" :style="{ boxShadow: business?.primary_color ? `0px 0px 15px ${business.primary_color}6d` : '0px 0px 15px #0785906d' }">
       <NuxtPage></NuxtPage>
     </div>
     <Toast position="bottom-right" />

@@ -17,7 +17,6 @@ const client = useSupabaseClient<Database>();
 const scannerOpen = ref(false);
 const modalCustomerCardOpen = ref(false);
 
-
 // COMPUTED
 const walletData = computed(() => {
   const data = {
@@ -26,7 +25,7 @@ const walletData = computed(() => {
     punches: customerWallet.value?.punches || 0,
     rewardGoal: business.value?.reward_goal || 10,
     primaryColor: business.value?.primary_color || '#14ABB7'
-  }
+  };
   return data;
 });
 
@@ -77,12 +76,28 @@ const handleScanSuccess = async (data: string) => {
     return;
   }
 
+  if (!walletData.punches || walletData.punches < 0) {
+    console.error('Wallet has invalid punches:', walletData.punches);
+    return;
+  }
+
   const updateResult = await client.from('wallet').update({ last_scan_at: new Date().toISOString() }).eq('id', walletData.id);
+  const eventResult = await client.from('events').insert({
+    type: 'scan',
+    wallet_id: walletData.id,
+    delta: 0
+  });
 
   if (updateResult.error) {
     console.error('Failed to update last scan time:', updateResult.error);
   } else {
     console.log('Last scan time updated successfully.');
+  }
+
+  if (eventResult.error) {
+    console.error('Failed to log scan event:', eventResult.error);
+  } else {
+    console.log('Scan event logged successfully.');
   }
 
   console.log('Fetched wallet data:', walletData);

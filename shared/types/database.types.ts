@@ -61,19 +61,25 @@ export type Database = {
       }
       client: {
         Row: {
+          auth_id: string
           created_at: string
           email: string
           id: number
+          updated_at: string
         }
         Insert: {
+          auth_id?: string
           created_at?: string
           email: string
           id?: number
+          updated_at?: string
         }
         Update: {
+          auth_id?: string
           created_at?: string
           email?: string
           id?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -82,6 +88,8 @@ export type Database = {
           created_at: string
           delta: number
           id: number
+          new_punches: number | null
+          old_punches: number | null
           type: Database["public"]["Enums"]["event_type"]
           wallet_id: number | null
         }
@@ -89,6 +97,8 @@ export type Database = {
           created_at?: string
           delta: number
           id?: number
+          new_punches?: number | null
+          old_punches?: number | null
           type: Database["public"]["Enums"]["event_type"]
           wallet_id?: number | null
         }
@@ -96,6 +106,8 @@ export type Database = {
           created_at?: string
           delta?: number
           id?: number
+          new_punches?: number | null
+          old_punches?: number | null
           type?: Database["public"]["Enums"]["event_type"]
           wallet_id?: number | null
         }
@@ -116,7 +128,7 @@ export type Database = {
           created_at: string
           id: number
           last_scan_at: string | null
-          punches: number | null
+          punches: number
           updated_at: string | null
         }
         Insert: {
@@ -125,7 +137,7 @@ export type Database = {
           created_at?: string
           id?: number
           last_scan_at?: string | null
-          punches?: number | null
+          punches?: number
           updated_at?: string | null
         }
         Update: {
@@ -134,7 +146,7 @@ export type Database = {
           created_at?: string
           id?: number
           last_scan_at?: string | null
-          punches?: number | null
+          punches?: number
           updated_at?: string | null
         }
         Relationships: [

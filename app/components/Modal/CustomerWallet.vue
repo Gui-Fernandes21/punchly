@@ -40,6 +40,13 @@ const decrementPunches = async () => {
   try {
     const { error } = await client.from('wallet').update({ punches: customerWallet.value?.punches }).eq('business_id', business.value.id);
     if (error) throw error;
+    const eventResult = await client.from('events').insert({
+      type: 'remove',
+      wallet_id: customerWallet.value.id,
+      new_punches: customerWallet.value.punches || 0,
+      delta: -1
+    });
+    if (eventResult.error) throw eventResult.error;
   } catch (error) {
     showError({ message: 'Failed to update punches. Please try again.' });
   }
@@ -59,6 +66,13 @@ const incrementPunches = async () => {
   try {
     const { error } = await client.from('wallet').update({ punches: customerWallet.value?.punches }).eq('business_id', business.value.id);
     if (error) throw error;
+    const eventResult = await client.from('events').insert({
+      type: 'add',
+      wallet_id: customerWallet.value.id,
+      new_punches: customerWallet.value.punches || 0,
+      delta: 1
+    });
+    if (eventResult.error) throw eventResult.error;
   } catch (error) {
     showError({ message: 'Failed to update punches. Please try again.' });
   }
