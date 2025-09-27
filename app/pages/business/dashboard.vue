@@ -16,6 +16,9 @@ const client = useSupabaseClient<Database>();
 // STATE
 const scannerOpen = ref(false);
 const modalCustomerCardOpen = ref(false);
+const activeWalletsCount = ref(0);
+const stampsTodayCount = ref(0);
+const rewardsClaimedCount = ref(0);
 
 // COMPUTED
 const walletData = computed(() => {
@@ -106,6 +109,25 @@ const handleScanSuccess = async (data: string) => {
   scannerOpen.value = false;
   modalCustomerCardOpen.value = true;
 };
+
+const loadBusinessMetrics = async () => {
+  if (!business.value) return;
+
+  const activeWallets = await client.from('wallet').select('id', { count: 'exact' }).eq('business_id', business.value.id);
+  const stampsToday = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'add').gte('created_at', new Date(new Date().setHours(0, 0, 0, 0)).toISOString());
+  const rewardsClaimed = await client.from('events').select('id, wallet (business_id)', { count: 'exact' }).eq('wallet.business_id', business.value.id).eq('type', 'redeem');
+
+  console.log(stampsToday);
+  
+
+  activeWalletsCount.value = activeWallets.count || 0;
+  stampsTodayCount.value = stampsToday.count || 0;
+  rewardsClaimedCount.value = rewardsClaimed.count || 0;
+};
+
+onMounted(() => {
+  loadBusinessMetrics();
+});
 </script>
 
 <template>
@@ -128,7 +150,7 @@ const handleScanSuccess = async (data: string) => {
         <div class="active-wallets">
           <div class="row">
             <Icon class="metrics-icon" name="material-symbols:account-balance-wallet-outline" size="2rem" />
-            <span class="value">1,356</span>
+            <span class="value">{{ activeWalletsCount }}</span>
           </div>
           <div class="row">
             <p>Active Wallets</p>
@@ -137,7 +159,7 @@ const handleScanSuccess = async (data: string) => {
         <div class="stamps-today">
           <div class="row">
             <Icon class="metrics-icon" name="lucide:stamp" size="2rem" />
-            <span class="value">5</span>
+            <span class="value">{{ stampsTodayCount }}</span>
           </div>
           <div class="row">
             <p>Stamps Given Today</p>
@@ -146,7 +168,7 @@ const handleScanSuccess = async (data: string) => {
         <div class="rewards-claimed">
           <div class="row">
             <Icon class="metrics-icon" name="material-symbols:rewarded-ads-outline" size="2rem" />
-            <span class="value">10</span>
+            <span class="value">{{ rewardsClaimedCount }}</span>
           </div>
           <div class="row">
             <p>Rewards Claimed</p>
