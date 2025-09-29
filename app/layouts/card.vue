@@ -4,7 +4,7 @@ const business = useState<Tables<'business'> | null>('business_data');
 
 <template>
   <div class="layout-container">
-    <div class="layout-card mt-4" :style="{ boxShadow: business?.primary_color ? `0px 0px 15px ${business.primary_color}6d` : '0px 0px 15px #0785906d' }">
+    <div class="layout-card" :style="{ boxShadow: business?.primary_color ? `0px 0px 15px ${business.primary_color}6d` : '0px 0px 15px #0785906d' }">
       <NuxtPage></NuxtPage>
     </div>
     <Toast position="bottom-right" />
@@ -17,10 +17,11 @@ const business = useState<Tables<'business'> | null>('business_data');
 .layout-container {
   background-color: #f1f1f1;
   min-height: 100vh;
+  overflow-y: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} 
 
 .layout-card {
   position: relative;
@@ -32,6 +33,7 @@ const business = useState<Tables<'business'> | null>('business_data');
   padding: 16px;
 
   box-shadow: 0px 0px 15px #0785906d;
+
 }
 
 @media (max-width: 768px) {

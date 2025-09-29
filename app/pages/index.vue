@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue';
 
 // import { useLayout } from '@/layout/composables/layout';
@@ -18,8 +18,23 @@ useHead({
 });
 
 definePageMeta({
-  layout: 'landing'
+  layout: 'full-page'
 });
+
+const openHamburger = ref(false);
+
+function toggle() {
+  openHamburger.value = !openHamburger.value;
+}
+
+function onDocClick(e: MouseEvent) {
+  // close when clicking outside
+  const m = document.getElementById('landing-menu');
+  const b = document.getElementById('landing-trigger');
+  console.log('Document clicked');
+  
+  if (m && b && !m.contains(e.target as Node) && !b.contains(e.target as Node)) openHamburger.value = false;
+}
 
 function navigateToLogin() {
   router.push('/login');
@@ -36,65 +51,63 @@ const backgroundStyle = computed(() => {
   return { 'background-image': `url(${path + image})` };
 });
 
-function scrollTo(element) {
+function scrollTo(element: HTMLElement | null) {
   setTimeout(() => {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   }, 200);
 }
+
+onMounted(() => document.addEventListener('click', onDocClick));
+onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
 </script>
 
 <template>
-  <div class="bg-surface-50 dark:bg-surface-950 min-h-screen w-screen">
+  <div class="bg-surface-50 dark:bg-surface-950 min-h-screen">
     <div class="landing-wrapper">
       <div :style="backgroundStyle" class="bg-no-repeat bg-cover bg-bottom">
         <div class="flex items-center justify-between px-8 sm:px-20 py-12">
           <a @click="navigateToDashboard" class="cursor-pointer flex items-center gap-3">
-            <img src="/images/logo/punchly-logo.png" alt="Punchly Logo" class="h-8 w-8" />
-            <span class="text-2xl font-bold" style="color: #14abb7">PUNCHLY</span>
+            <img src="/images/logo/punchly-logo.png" alt="Punchly Logo" class="h-20 w-20" />
+            <span class="brand-name text-2xl font-bold" style="color: #14abb7">PUNCHLY</span>
           </a>
           <div class="relative">
-            <Button
-              rounded
-              class="cursor-pointer lg:!hidden select-none w-12 h-12 !text-color"
-              v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden', hideOnOutsideClick: 'true' }"
-            >
-              <i class="pi pi-bars !text-4xl"></i>
+            <Button rounded class="cursor-pointer lg:!hidden select-none w-12 h-12 !text-color !mt-0" id="landing-trigger" @click="toggle()">
+              <i class="pi pi-bars !text-2xl"></i>
             </Button>
-            <div
-              id="landing-menu"
-              class="hidden lg:block absolute right-0 top-auto lg:static z-10 shadow lg:shadow-none w-60 lg:w-auto bg-surface-0 dark:bg-surface-900 lg:bg-surface-50 dark:lg:bg-surface-950 origin-top p-4 lg:p-0"
-              style="border-radius: 14px"
-            >
-              <ul class="flex flex-col lg:flex-row m-0 p-0 list-none text-2xl lg:text-base">
-                <li>
-                  <a
-                    class="block p-4 cursor-pointer font-bold text-muted-color hover:text-color transition-colors duration-300"
-                    @click="scrollTo(features)"
-                    v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
-                    >FEATURES</a
-                  >
-                </li>
-                <li>
-                  <a
-                    class="block p-4 cursor-pointer font-bold text-muted-color hover:text-color transition-colors duration-300"
-                    @click="scrollTo(stats)"
-                    v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
-                    >HOW IT WORKS</a
-                  >
-                </li>
-                <li>
-                  <a
-                    class="block p-4 cursor-pointer font-bold text-muted-color hover:text-color transition-colors duration-300"
-                    @click="scrollTo(pricing)"
-                    v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
-                    >PRICING</a
-                  >
-                </li>
-                <li>
-                  <a class="block p-4 cursor-pointer font-bold text-muted-color hover:text-color transition-colors duration-300" @click="navigateToLogin">SIGN IN</a>
-                </li>
-              </ul>
-            </div>
+
+            <Transition enter-from-class="opacity-0 scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
+              <div id="landing-menu" v-show="openHamburger" class="lg:block absolute right-0 top-auto lg:static z-10 shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0" style="border-radius: 14px">
+                <ul class="flex flex-col lg:flex-row m-0 p-0 list-none text-xl lg:text-base">
+                  <li>
+                    <a
+                      class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
+                      @click="scrollTo(features)"
+                      v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                      >FEATURES</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
+                      @click="scrollTo(stats)"
+                      v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                      >HOW IT WORKS</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
+                      @click="scrollTo(pricing)"
+                      v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                      >PRICING</a
+                    >
+                  </li>
+                  <li>
+                    <a class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300" @click="navigateToLogin">SIGN IN</a>
+                  </li>
+                </ul>
+              </div>
+            </Transition>
           </div>
         </div>
         <div class="flex flex-col lg:flex-row gap-8 items-center justify-between px-8 sm:px-20 py-20 overflow-hidden">
@@ -102,13 +115,13 @@ function scrollTo(element) {
             <span class="font-bold text-6xl lg:text-7xl mt-0 mb-8 block">Digital Loyalty Cards</span>
             <span class="font-bold text-6xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
             <p class="text-2xl lg:text-3xl mb-8 leading-normal text-muted-color">Transform your business with digital loyalty programs that customers love and businesses trust.</p>
-            <div class="flex gap-4 flex-wrap">
-              <Button label="GET STARTED FREE" @click="navigateToLogin" style="background-color: #14abb7; border-color: #14abb7" class="text-white"></Button>
-              <Button label="VIEW DEMO" severity="secondary" outlined></Button>
+            <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
+              <Button label="GET STARTED FREE" @click="navigateToLogin" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
+              <!-- <Button label="VIEW DEMO" severity="secondary" outlined></Button> -->
             </div>
           </div>
           <div class="flex-1">
-            <img alt="Punchly App Preview" src="/images/pages/no-image.png" class="animate-fadeinright animate-ease-in-out animate-duration-1000 w-full rounded-2xl shadow" />
+            <img alt="Punchly App Preview" src="/images/pages/app-in-phone_nobg.png" class="animate-fadeinright animate-ease-in-out animate-duration-1000 w-full rounded-2xl" />
           </div>
         </div>
         <div ref="stats" class="p-8 sm:p-20">
@@ -188,7 +201,7 @@ function scrollTo(element) {
             </div>
             <h3 class="mt-0 mb-8 font-bold text-4xl">Mobile-First</h3>
             <p class="leading-normal text-muted-color">Designed for smartphones with intuitive touch interfaces. Customers can access their loyalty cards anytime, anywhere.</p>
-          </div> 
+          </div>
           <div>
             <div class="p-12 flex items-center justify-center mb-8" style="border-radius: 14px; border-bottom-right-radius: 5rem; background: linear-gradient(135deg, #14abb7 0%, #0e8a94 100%)">
               <Icon name="material-symbols:security" class="text-white text-6xl lg:text-8xl" />
@@ -198,22 +211,22 @@ function scrollTo(element) {
           </div>
         </div>
       </div>
-      <div class="px-8 sm:px-20 py-20 bg-surface-50 dark:bg-surface-950 flex flex-wrap gap-8 items-center justify-between">
+      <div class="px-8 sm:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center">
         <div class="flex-1">
           <div class="text-4xl lg:text-5xl font-bold mb-4">Ready to Transform Your Business?</div>
           <p class="text-xl text-muted-color">Join thousands of businesses already using Punchly to build customer loyalty.</p>
         </div>
         <div class="flex gap-4">
-          <Button label="Start Free Trial" @click="navigateToLogin" style="background-color: #14abb7; border-color: #14abb7" class="text-white text-lg px-6 py-3"></Button>
+          <Button label="Start Free Trial" @click="navigateToLogin"  class="text-lg px-6 py-3 w-auto !mt-6" />
         </div>
       </div>
-      <div ref="pricing" class="px-8 sm:px-20 py-20 bg-surface-0 dark:bg-surface-900">
+      <div ref="pricing" class="px-8 sm:px-20 py-20 bg-zinc-50 dark:bg-surface-900">
         <div class="text-center mb-16">
           <h2 class="font-bold text-5xl lg:text-6xl mb-4">Simple, Transparent Pricing</h2>
           <p class="text-xl text-muted-color">Choose the plan that fits your business needs. No hidden fees, cancel anytime.</p>
         </div>
-        <div class="flex flex-col lg:flex-row justify-center gap-8 max-w-5xl mx-auto">
-          <div class="shadow bg-surface-0 dark:bg-surface-900 p-8 text-center rounded-2xl border-2 border-surface-200 dark:border-surface-700">
+        <div class="flex flex-col lg:flex-row justify-center gap-8 mx-auto">
+          <div class="shadow bg-surface-0 dark:bg-surface-900 py-8 px-16 text-center rounded-2xl border-2 border-surface-200 dark:border-surface-700">
             <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #f3f4f6">
               <Icon name="material-symbols:rocket-launch-outline" class="text-4xl" style="color: #14abb7" />
             </div>
@@ -226,7 +239,7 @@ function scrollTo(element) {
             <ul class="list-none p-0 m-0 text-left">
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
-                <span>Up to 100 customers</span>
+                <span>Up to 25 customers</span>
               </li>
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
@@ -242,14 +255,14 @@ function scrollTo(element) {
               </li>
             </ul>
           </div>
-          <div class="shadow bg-surface-0 dark:bg-surface-900 p-8 text-center rounded-2xl border-2 relative" style="border-color: #14abb7">
+          <div class="shadow bg-surface-0 dark:bg-surface-900 py-8 px-16 text-center rounded-2xl border-2 relative" style="border-color: #14abb7">
             <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full text-sm font-bold text-white" style="background-color: #14abb7">MOST POPULAR</div>
             <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #14abb7">
               <Icon name="material-symbols:business-center" class="text-white text-4xl" />
             </div>
             <div class="text-2xl font-bold mb-4">Professional</div>
             <div class="mb-8">
-              <span class="text-6xl font-bold" style="color: #14abb7">$29</span>
+              <span class="text-6xl font-bold" style="color: #14abb7">$19</span>
               <span class="text-xl text-muted-color">/month</span>
               <div class="text-lg text-muted-color">For growing businesses</div>
             </div>
@@ -257,7 +270,7 @@ function scrollTo(element) {
             <ul class="list-none p-0 m-0 text-left">
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
-                <span>Up to 1,000 customers</span>
+                <span>Up to 200 customers</span>
               </li>
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
@@ -277,13 +290,13 @@ function scrollTo(element) {
               </li>
             </ul>
           </div>
-          <div class="shadow bg-surface-0 dark:bg-surface-900 p-8 text-center rounded-2xl border-2 border-surface-200 dark:border-surface-700">
+          <div class="shadow bg-surface-0 dark:bg-surface-900 py-8 px-16 text-center rounded-2xl border-2 border-surface-200 dark:border-surface-700">
             <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #f3f4f6">
               <Icon name="material-symbols:enterprise" class="text-4xl" style="color: #14abb7" />
             </div>
             <div class="text-2xl font-bold mb-4">Enterprise</div>
             <div class="mb-8">
-              <span class="text-6xl font-bold" style="color: #14abb7">$99</span>
+              <span class="text-6xl font-bold" style="color: #14abb7">$49</span>
               <span class="text-xl text-muted-color">/month</span>
               <div class="text-lg text-muted-color">For large organizations</div>
             </div>
@@ -292,10 +305,6 @@ function scrollTo(element) {
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
                 <span>Unlimited customers</span>
-              </li>
-              <li class="flex items-center mb-4">
-                <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
-                <span>Multi-location support</span>
               </li>
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
@@ -384,6 +393,11 @@ function scrollTo(element) {
 <style scoped>
 .p-button-text {
   width: auto !important;
+}
+
+.brand-name {
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 1px;
 }
 
 .landing-wrapper {

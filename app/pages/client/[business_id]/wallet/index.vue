@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-addRouteMiddleware('fetch-business', async (to, from) => {});
-
 definePageMeta({
-  layout: 'card',
+  layout: 'full-page',
   middleware: [
     async function (to, from) {
       const business = useState<Tables<'business'> | null>('business_data');
@@ -18,7 +16,7 @@ definePageMeta({
         return;
       }
 
-      const { data, error } = (await client.from('business').select('*').eq('id', +bizId).single()) as { data: Tables<'business'> | null; error: Error | null };
+      const { data, error } = await client.from('business').select('*').eq('id', +bizId).single();
 
       if (error) {
         console.error('Error fetching business data:', error);
@@ -81,44 +79,100 @@ const logout = async () => {
   console.log('Logged out successfully');
   window.location.href = '/client/login';
 };
+
+const items = ref([
+  {
+    label: 'Dashboard',
+    icon: 'pi pi-home',
+    command: () => {
+      navigateTo('/client/dashboard');
+    }
+  },
+  {
+    label: 'Logout',
+    icon: 'pi pi-sign-out',
+    command: () => {
+      logout();
+    } 
+  }
+]);
 </script>
 
 <template>
   <section class="page-container">
-    <header>
-      <div class="placeholder">
-        <div class="logo">
-          <img :src="business?.logo_url || '/images/logo/high-quality_punchly-logo.png'" alt="Logo" />
-        </div>
-      </div>
-    </header>
+    <nav class="w-full">
+      <Menubar :model="items">
+        <template #item="{ item, props, hasSubmenu, root }">
+          <a v-ripple class="flex items-center" v-bind="props.action">
+            <span>{{ item.label }}</span>
+            <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
+            <i v-if="hasSubmenu" :class="['pi pi-angle-down ml-auto', { 'pi-angle-down': root, 'pi-angle-right': !root }]"></i>
+          </a>
+        </template>
+        <template #end>
+          <div class="flex items-center gap-2">
+            <div class="logo">
+              <img :src="business?.logo_url || '/images/logo/high-quality_punchly-logo.png'" alt="Logo" />
+            </div>
+          </div>
+        </template>
+      </Menubar>
+    </nav>
 
-    <section class="main-content">
-      <UIWallet mode="full" :card-data="cardData" />
-      <div class="actions">
-        <Button @click="openQrModal">Show QR Code</Button>
-        <Button @click="logout">Logout</Button>
-      </div>
-      <ModalCustomerCode v-model="qrModal" :qr-data="walletQrCodeString || ''" />
+    <section class="card">
+      <header>
+        <!-- <div class="placeholder">
+          <div class="logo">
+            <img :src="business?.logo_url || '/images/logo/high-quality_punchly-logo.png'" alt="Logo" />
+          </div>
+        </div> -->
+      </header>
+
+      <section class="card_main-content">
+        <UIWallet mode="full" :card-data="cardData" />
+        <div class="actions">
+          <Button class="primary" :style="{ backgroundColor: business?.primary_color || '#14ABB7' }" @click="openQrModal"> <Icon name="material-symbols:qr-code" size="1.5rem"/> Present QR Code</Button>
+          <div class="secondary flex gap-2 ">
+            <Button severity="secondary" @click="navigateTo('client/dashboard')">See All Cards</Button>
+            <Button severity="secondary" outlined @click="logout">Logout</Button>
+          </div>
+        </div>
+        <ModalCustomerCode v-model="qrModal" :qr-data="walletQrCodeString || ''" />
+      </section>
     </section>
 
-    <app-footer />
+    <app-footer class="mt-4" />
   </section>
 </template>
 
 <style scoped>
+.card {
+  width: 90%;
+  max-width: 40rem;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
 .placeholder {
   width: 100%;
   height: 5rem;
 }
 .logo {
-  position: absolute;
-  top: -5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  /* position: absolute;
+  top: -5rem; */
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
   background: #fff;
-  width: 10rem;
-  height: 10rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
 
   display: flex;
@@ -129,10 +183,12 @@ const logout = async () => {
     width: 11rem;
   }
 }
-footer {
-  margin-top: 1rem;
+.navigation {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
 }
-.main-content {
+.card_main-content {
   width: 100%;
   height: 100%;
   flex: 1;
@@ -148,11 +204,11 @@ footer {
 }
 .page-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
 }
 header > h1 {
@@ -161,11 +217,13 @@ header > h1 {
   margin-bottom: 0.5rem;
   font-family: 'Poppins', sans-serif;
 }
-button {
+.actions .primary {
   width: 100%;
   margin-top: 1rem;
   padding: 1rem;
   font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
 }
 
 ::v-deep(.p-floatlabel),
@@ -176,5 +234,9 @@ button {
 ::v-deep(.p-inputtext) {
   padding: 1rem;
   font-size: 1.2rem;
+}
+
+::v-deep(.layout-footer) {
+  margin-top: 0 !important;
 }
 </style>

@@ -39,12 +39,12 @@ watch(
 );
 
 const punchStyle = (index: number) => {
-  let backgroundColor = '#e0e0e0';
+  let backgroundColor = '#e4e4e7';
   let borderRadius = '50%';
   let color = '#000';
 
-  if (!walletData.value) return { backgroundColor: '#e0e0e0' };
-  
+  if (!walletData.value) return { backgroundColor: '#e4e4e7' };
+
   if (index < walletData.value.punches) {
     backgroundColor = walletData.value.primaryColor;
   }
@@ -67,7 +67,7 @@ const punchStyle = (index: number) => {
  * #fbe082
  * #f2943b
  * #f8d79a
- * 
+ *
  * Give me bright golden colors for a reward icon
  * - #ffd700
  * - #ffecb3
@@ -76,20 +76,22 @@ const punchStyle = (index: number) => {
 
 <template>
   <section class="wallet" :style="{ borderColor: walletData.primaryColor }">
-    <header v-if="props.mode === 'full'" class="wallet-header" :style="{ backgroundColor: walletData.primaryColor }" >
+    <header v-if="props.mode === 'full'" class="wallet-header" :style="{ backgroundColor: walletData.primaryColor }">
       <h2>{{ walletData.businessName }}</h2>
     </header>
+
     <div class="content">
       <div class="wallet-grid">
         <div v-for="(n, index) in walletData.rewardGoal" :key="index" class="punch" :style="punchStyle(index)">
-          <Icon v-if="n == walletData.rewardGoal" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon"/>
+          <Icon v-if="n == walletData.rewardGoal" name="material-symbols:featured-seasonal-and-gifts-rounded" size="2.5rem" class="reward-icon" />
         </div>
       </div>
 
-      <p v-if="props.mode === 'full'">
-        Only <strong>{{ walletData.rewardGoal - walletData.punches }}</strong> more punches needed for (a) <br />
-        "<strong>{{ walletData.rewardLabel }}</strong>"!
-      </p>
+      <div class="wallet-footer" v-if="props.mode === 'full'">
+        <div class="reward-progress"><span class="punches" :style="{ color: walletData.primaryColor }">{{ walletData.punches }}</span> / <span class="goal">{{ walletData.rewardGoal }}</span></div>
+        <span>Reward:</span>
+        <h3>{{ walletData.rewardLabel }}</h3>
+      </div>
     </div>
   </section>
 </template>
@@ -98,22 +100,44 @@ const punchStyle = (index: number) => {
 section.wallet {
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 0 ;
+  border-radius: 12px;
+  padding: 0;
 }
 
 .content {
-  margin: 1rem 0;
+  margin: 2rem 0;
   display: grid;
   place-items: center;
 }
 
-.content > p {
+.wallet-footer {
   text-align: center;
   margin: 1rem 0 0 0;
   font-size: 1rem;
   font-weight: 500;
   color: var(--text-secondary);
+
+  .reward-progress {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+
+    .punches {
+      color: var(--text-primary);
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .goal {
+      color: var(--text-secondary);
+    }
+  }
+
+  & > h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
 }
 
 .wallet-header {
@@ -132,7 +156,7 @@ section.wallet {
 .wallet-grid {
   display: grid;
   grid-template-columns: repeat(3, 5rem);
-  row-gap: 10px;
+  row-gap: 20px;
   place-items: center;
   justify-content: center;
 }
@@ -143,6 +167,7 @@ section.wallet {
   position: relative;
   border-radius: 50%;
   cursor: pointer;
+  /* border: 1px solid #535355; */
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 }
 
