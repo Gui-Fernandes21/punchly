@@ -2,7 +2,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path === '/') return;
   
   // Routes that should NOT be gated
-  const PUBLIC_PREFIXES = ['/auth', '/confirm-email'];
+  const PUBLIC_PREFIXES = ['/register', '/confirm-email'];
 
   if (PUBLIC_PREFIXES.some((prefix) => to.path.includes(prefix))) {
     return;

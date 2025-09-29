@@ -37,11 +37,15 @@ function onDocClick(e: MouseEvent) {
 }
 
 function navigateToLogin() {
-  router.push('/login');
+  navigateTo('business/login');
+}
+
+function navigateToRegister() {
+  navigateTo('business/register');
 }
 
 function navigateToDashboard() {
-  router.push('/');
+  navigateTo('/');
 }
 
 const backgroundStyle = computed(() => {
@@ -68,14 +72,14 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
         <div class="flex items-center justify-between px-8 sm:px-20 py-12">
           <a @click="navigateToDashboard" class="cursor-pointer flex items-center gap-3">
             <img src="/images/logo/punchly-logo.png" alt="Punchly Logo" class="h-20 w-20" />
-            <span class="brand-name text-2xl font-bold" style="color: #14abb7">PUNCHLY</span>
+            <span class="brand-name text-2xl font-bold" style="color: #14abb7">Punchly</span>
           </a>
           <div class="relative">
-            <Button rounded class="cursor-pointer lg:!hidden select-none w-12 h-12 !text-color !mt-0" id="landing-trigger" @click="toggle()">
+            <Button rounded class="cursor-pointer lg:!hidden select-none w-12 h-12 !text-color !mt-0" id="landing-trigger" @click="toggle">
               <i class="pi pi-bars !text-2xl"></i>
             </Button>
 
-            <Transition enter-from-class="opacity-0 scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
+            <Transition enter-from-class="opacity-0   scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
               <div id="landing-menu" v-show="openHamburger" class="lg:block absolute right-0 top-auto lg:static z-10 shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0" style="border-radius: 14px">
                 <ul class="flex flex-col lg:flex-row m-0 p-0 list-none text-xl lg:text-base">
                   <li>
@@ -116,11 +120,11 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <span class="font-bold text-6xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
             <p class="text-2xl lg:text-3xl mb-8 leading-normal text-muted-color">Transform your business with digital loyalty programs that customers love and businesses trust.</p>
             <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
-              <Button label="GET STARTED FREE" @click="navigateToLogin" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
+              <Button label="GET STARTED FREE" @click="navigateToRegister" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
               <!-- <Button label="VIEW DEMO" severity="secondary" outlined></Button> -->
             </div>
           </div>
-          <div class="flex-1">
+          <div data-aos="fade-left" data-aos-delay="500" data-aos-duration="1000" class="flex-1">
             <img alt="Punchly App Preview" src="/images/pages/app-in-phone_nobg.png" class="animate-fadeinright animate-ease-in-out animate-duration-1000 w-full rounded-2xl" />
           </div>
         </div>
@@ -130,7 +134,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <h2 class="font-bold text-5xl lg:text-6xl my-0 text-center">Simple Steps to Success</h2>
           </div>
           <div class="flex flex-col xl:flex-row justify-center gap-8">
-            <div class="bg-zinc-50 text-center py-7 px-5 shadow" style="border-radius: 14px">
+            <div data-aos="fade-right" class="bg-zinc-50 text-center py-7 px-5 shadow" style="border-radius: 14px">
               <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #14abb7">
                 <Icon name="material-symbols:store" class="text-white text-4xl" />
               </div>
@@ -142,8 +146,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                 <img alt="intro image" src="/svg/landing/create-store.svg" class="w-[50%]" />
               </div>
             </div>
-            <div class="flex flex-col md:flex-row xl:flex-col gap-8">
-              <div class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
+            <div class="flex flex-col md:flex-row xl:flex-col gap-8" >
+              <div data-aos="fade-down" class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
                 <div class="flex-1 text-center xl:text-right">
                   <img alt="intro image" src="/svg/landing/share-qr.svg" class="w-[75%]" />
                 </div>
@@ -154,7 +158,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                   <Button icon="pi pi-arrow-right" label="Learn More" class="p-button-text" iconPos="right" style="color: #14abb7"></Button>
                 </div>
               </div>
-              <div class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
+              <div data-aos="fade-up" class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
                 <div class="text-center xl:text-left flex-1">
                   <div class="text-xl text-muted-color mb-4">Step 3</div>
                   <h3 class="mt-0 mb-4 font-bold text-4xl">Reward Customers</h3>
@@ -166,7 +170,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                 </div>
               </div>
             </div>
-            <div class="bg-zinc-50 text-center py-7 px-5 shadow" style="border-radius: 14px">
+            <div data-aos="fade-left" class="bg-zinc-50 text-center py-7 px-5 shadow" style="border-radius: 14px">
               <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #14abb7">
                 <Icon name="material-symbols:analytics-outline" class="text-white text-4xl" />
               </div>
@@ -235,7 +239,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <span class="text-6xl font-bold" style="color: #14abb7">Free</span>
               <div class="text-lg text-muted-color">Perfect to get started</div>
             </div>
-            <Button label="GET STARTED" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
+            <Button label="Start for free" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
             <ul class="list-none p-0 m-0 text-left">
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
@@ -266,7 +270,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <span class="text-xl text-muted-color">/month</span>
               <div class="text-lg text-muted-color">For growing businesses</div>
             </div>
-            <Button label="START TRIAL" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
+            <Button label="Start for free" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
             <ul class="list-none p-0 m-0 text-left">
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
@@ -294,13 +298,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background-color: #f3f4f6">
               <Icon name="material-symbols:enterprise" class="text-4xl" style="color: #14abb7" />
             </div>
-            <div class="text-2xl font-bold mb-4">Enterprise</div>
+            <div class="text-2xl font-bold mb-4">Expert</div>
             <div class="mb-8">
               <span class="text-6xl font-bold" style="color: #14abb7">$49</span>
               <span class="text-xl text-muted-color">/month</span>
               <div class="text-lg text-muted-color">For large organizations</div>
             </div>
-            <Button label="CONTACT SALES" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
+            <Button label="Start for free" @click="navigateToLogin" class="w-full mb-8 p-3" style="background-color: #14abb7; border-color: #14abb7"></Button>
             <ul class="list-none p-0 m-0 text-left">
               <li class="flex items-center mb-4">
                 <i class="pi pi-check-circle text-xl mr-3" style="color: #14abb7"></i>
