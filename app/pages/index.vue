@@ -17,6 +17,7 @@ definePageMeta({
 });
 
 const waitlistModal = ref(false);
+const successModal = ref(false);
 const openHamburger = ref(false);
 
 function toggle() {
@@ -57,6 +58,11 @@ function scrollTo(element: HTMLElement | null) {
   setTimeout(() => {
     element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   }, 200);
+}
+
+function handleSuccess() {
+  successModal.value = true;
+  waitlistModal.value = false;
 }
 
 onMounted(() => document.addEventListener('click', onDocClick));
@@ -124,8 +130,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <span class="header-font font-bold text-5xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
             <p class="text-font text-xl lg:text-2xl mb-8 leading-normal text-muted-color">We’re building the easiest loyalty card platform for small businesses. Be the first to get early access.</p>
             <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
-              <Button label="Join the Pre-Launch Waitlist" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
-              <!-- <Button label="VIEW DEMO" severity="secondary" outlined></Button> -->
+              <Button label="Join the Pre-Launch Waitlist" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-auto text-white"></Button>
             </div>
           </div>
           <div class="flex-1">
@@ -333,7 +338,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
       </div>
     </div>
   </div>
-  <PrelaunchWaitListModal v-model="waitlistModal" />
+  <PrelaunchWaitListModal v-model="waitlistModal" @success="handleSuccess"/>
+  <PrelaunchSuccessModal v-model="successModal" />
 </template>
 
 <style scoped>

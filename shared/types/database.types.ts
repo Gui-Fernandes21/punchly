@@ -121,6 +121,30 @@ export type Database = {
           },
         ]
       }
+      prelaunch_email: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          name: string
+          role: Database["public"]["Enums"]["prelaunch_role"]
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          name: string
+          role: Database["public"]["Enums"]["prelaunch_role"]
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          name?: string
+          role?: Database["public"]["Enums"]["prelaunch_role"]
+        }
+        Relationships: []
+      }
       wallet: {
         Row: {
           business_id: number | null
@@ -175,6 +199,7 @@ export type Database = {
     }
     Enums: {
       event_type: "scan" | "add" | "remove" | "redeem"
+      prelaunch_role: "business" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -303,6 +328,7 @@ export const Constants = {
   public: {
     Enums: {
       event_type: ["scan", "add", "remove", "redeem"],
+      prelaunch_role: ["business", "customer"],
     },
   },
 } as const
