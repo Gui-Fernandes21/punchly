@@ -16,7 +16,6 @@ definePageMeta({
   layout: 'full-page'
 });
 
-
 const waitlistModal = ref(false);
 const openHamburger = ref(false);
 
@@ -78,7 +77,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <i class="pi pi-bars !text-2xl"></i>
             </Button>
 
-            <Transition enter-from-class="opacity-0   scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
+            <Transition enter-from-class="opacity-0 scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
               <div
                 id="landing-menu"
                 v-show="openHamburger"
@@ -231,7 +230,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           </ul>
         </div>
         <div class="flex gap-4">
-          <Button label="Join the waitlist" @click="navigateToLogin" class="text-lg px-6 py-3 w-full xl:w-auto !mt-6" />
+          <Button label="Join the waitlist" @click="openWaitlistModal" class="text-lg px-6 py-3 w-full xl:w-auto !mt-6" />
         </div>
       </div>
       <div ref="pricing" class="px-8 sm:px-20 py-20 bg-zinc-50">
@@ -273,7 +272,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <p class="mt-2 text-white/90">Join the pre‑launch waitlist. We’ll email when your invite is ready.</p>
           </div>
           <div class="w-full lg:w-auto">
-            <Button label="Join Waitlist" class="w-full lg:w-auto rounded-xl bg-white text-slate-900 border-0 btn-hover" />
+            <Button label="Join Waitlist" @click="openWaitlistModal" class="w-full lg:w-auto rounded-xl bg-white text-slate-900 border-0 btn-hover" />
           </div>
         </div>
         <!-- <div class="flex-1">
@@ -357,7 +356,6 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
 .btn-hover:hover {
   background: transparent;
   border: 1px solid white;
-
 }
 
 .header-font {
