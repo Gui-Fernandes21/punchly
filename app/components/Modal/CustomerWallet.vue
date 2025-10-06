@@ -127,7 +127,7 @@ watch(() => visible.value, (newVal) => {
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" :closable="true" pt:root:class="!border-0 !w-[80%]" pt:mask:class="backdrop-blur-md">
+  <Dialog v-model:visible="visible" closable pt:root:class="!border-0 !w-[80%]" pt:mask:class="backdrop-blur-md">
     <template #container="{ closeCallback }">
       <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded">
         <header class="flex justify-between w-full mb-4">

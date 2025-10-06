@@ -13,7 +13,7 @@ useHead({
 const business = useState<Tables<'business'> | null>('business_data');
 
 const errorModal = useErrorModal();
-const toast = useToast();
+const toast = useToast();2
 const router = useRouter();
 
 const rewardLabel = ref(business.value?.reward_label || '');
