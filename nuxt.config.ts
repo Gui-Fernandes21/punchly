@@ -4,6 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   css: ['~/assets/scss/styles.scss', '~/assets/css/tailwind.css', '~/assets/css/main.css'],
   modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/fonts', '@nuxtjs/supabase', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', 'nuxt-qrcode', 'nuxt-aos'],
+  app: {
+    head: {
+      title: 'Punchly - Loadless Payment Links for Small Businesses',
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' }]
+    }
+  },
   primevue: {
     importTheme: { from: '~/theme' },
     options: { ripple: true, inputStyle: 'outlined' }
