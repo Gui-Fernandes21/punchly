@@ -16,6 +16,8 @@ definePageMeta({
   layout: 'full-page'
 });
 
+
+const waitlistModal = ref(false);
 const openHamburger = ref(false);
 
 function toggle() {
@@ -35,6 +37,10 @@ function navigateToLogin() {
 
 function navigateToRegister() {
   navigateTo('business/register');
+}
+
+function openWaitlistModal() {
+  waitlistModal.value = true;
 }
 
 function navigateToDashboard() {
@@ -119,7 +125,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <span class="header-font font-bold text-5xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
             <p class="text-font text-xl lg:text-2xl mb-8 leading-normal text-muted-color">We’re building the easiest loyalty card platform for small businesses. Be the first to get early access.</p>
             <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
-              <Button label="Join the Pre-Launch Waitlist" @click="navigateToRegister" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
+              <Button label="Join the Pre-Launch Waitlist" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-[12rem] text-white"></Button>
               <!-- <Button label="VIEW DEMO" severity="secondary" outlined></Button> -->
             </div>
           </div>
@@ -140,7 +146,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <div class="text-xl text-muted-color mb-4">Step 1</div>
               <h3 class="mt-0 mb-4 font-bold text-4xl">Create Your Store</h3>
               <p class="leading-normal mb-8 text-muted-color">Set up your business profile and customize your loyalty card design in <strong>minutes</strong>.</p>
-              <Button icon="pi pi-arrow-right" label="Get Started" class="p-button-text" iconPos="right" style="color: #14abb7"></Button>
+              <!-- <Button icon="pi pi-arrow-right" label="Get Started" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
               <div class="mt-8 xl:pt-8 flex justify-center">
                 <img alt="intro image" src="/svg/landing/create-store.svg" class="w-[50%]" />
               </div>
@@ -154,7 +160,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                   <div class="text-xl text-muted-color mb-4">Step 2</div>
                   <h3 class="mt-0 mb-4 font-bold text-4xl">Share QR Code</h3>
                   <p class="leading-normal mb-8 text-muted-color">Print and display your unique QR code for customers to scan and join your loyalty program.</p>
-                  <Button icon="pi pi-arrow-right" label="Learn More" class="p-button-text" iconPos="right" style="color: #14abb7"></Button>
+                  <!-- <Button icon="pi pi-arrow-right" label="Learn More" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
                 </div>
               </div>
               <div class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
@@ -162,7 +168,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                   <div class="text-xl text-muted-color mb-4">Step 3</div>
                   <h3 class="mt-0 mb-4 font-bold text-4xl">Reward Customers</h3>
                   <p class="leading-normal mb-8 text-muted-color">Punch cards digitally and watch customer loyalty grow with automated rewards.</p>
-                  <Button icon="pi pi-arrow-right" label="See Rewards" class="p-button-text" iconPos="right" style="color: #14abb7"></Button>
+                  <!-- <Button icon="pi pi-arrow-right" label="See Rewards" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
                 </div>
                 <div class="flex-1 text-center xl:text-right">
                   <img alt="intro image" src="/svg/landing/reward-customers.svg" class="w-[80%]" />
@@ -176,7 +182,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <div class="text-xl text-muted-color mb-4">Step 4</div>
               <h3 class="mt-0 mb-4 font-bold text-4xl">Track Analytics</h3>
               <p class="line-height-3 mb-5 text-color-secondary">Monitor customer engagement and program performance with detailed insights.</p>
-              <Button icon="pi pi-arrow-right" label="View Analytics" class="p-button-text" iconPos="right" style="color: #14abb7"></Button>
+              <!-- <Button icon="pi pi-arrow-right" label="View Analytics" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
               <div class="mt-8 xl:pt-8 flex justify-center">
                 <img alt="intro image" src="/svg/landing/tracking-analytics.svg" class="w-[75%]" />
               </div>
@@ -186,22 +192,22 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
       </div>
       <div ref="features" class="px-8 sm:px-20 py-20 bg-zinc-50">
         <div class="text-center mb-16">
-          <h2 class="font-bold text-5xl lg:text-6xl mb-4">Why Choose Punchly?</h2>
+          <h2 class="header-font font-bold text-5xl lg:text-6xl mb-4">Why Choose Punchly?</h2>
           <p class="text-xl text-muted-color max-w-2xl mx-auto">Everything you need to build lasting customer relationships through digital loyalty programs.</p>
         </div>
-        <div class="flex flex-col lg:flex-row justify-evenly gap-8">
+        <div id="features" class="flex flex-col lg:flex-row justify-evenly gap-8">
           <div>
             <div class="p-6 flex items-center justify-center mb-8" style="border-radius: 14px; border-top-left-radius: 5rem; background: #14abb7aa">
               <Icon name="material-symbols:rocket-launch" class="text-white text-[6rem] lg:text-8xl" />
             </div>
-            <h3 class="mt-0 mb-4 font-bold text-4xl">Quick Setup</h3>
+            <h3 class="header-font mt-0 mb-4 font-bold text-4xl">Quick Setup</h3>
             <p class="leading-normal text-muted-color">Get your loyalty program running in under 5 minutes. No technical knowledge required.</p>
           </div>
           <div class="my-4 lg:my-0">
             <div class="p-6 flex items-center justify-center mb-8" style="border-radius: 14px; background: #14abb7aa">
               <Icon name="fa-solid:recycle" class="text-white text-[6rem] lg:text-8xl" />
             </div>
-            <h3 class="mt-0 mb-4 font-bold text-4xl">Eco-Friendly</h3>
+            <h3 class="header-font mt-0 mb-4 font-bold text-4xl">Eco-Friendly</h3>
             <p class="leading-normal text-muted-color">Customers can access their loyalty cards anytime, anywhere through their smartphones.</p>
             <p class="leading-normal text-muted-color"><strong>No more lost cards!</strong></p>
           </div>
@@ -209,7 +215,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <div class="p-6 flex items-center justify-center mb-8" style="border-radius: 14px; border-bottom-right-radius: 5rem; background: #14abb7aa">
               <Icon name="material-symbols:security" class="text-white text-[6rem] lg:text-8xl" />
             </div>
-            <h3 class="mt-0 mb-4 font-bold text-4xl">Secure & Reliable</h3>
+            <h3 class="header-font mt-0 mb-4 font-bold text-4xl">Secure & Reliable</h3>
             <p class="leading-normal text-muted-color">Enterprise-grade security ensures customer data is protected.</p>
           </div>
         </div>
@@ -267,7 +273,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <p class="mt-2 text-white/90">Join the pre‑launch waitlist. We’ll email when your invite is ready.</p>
           </div>
           <div class="w-full lg:w-auto">
-            <Button label="Join Waitlist" class="w-full lg:w-auto rounded-xl bg-white text-slate-900 border-0 hover:bg-slate-100" />
+            <Button label="Join Waitlist" class="w-full lg:w-auto rounded-xl bg-white text-slate-900 border-0 btn-hover" />
           </div>
         </div>
         <!-- <div class="flex-1">
@@ -328,9 +334,32 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
       </div>
     </div>
   </div>
+  <PrelaunchWaitListModal v-model="waitlistModal" />
 </template>
 
 <style scoped>
+#features {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  #features {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-hover {
+  border: 1px solid transparent;
+}
+
+.btn-hover:hover {
+  background: transparent;
+  border: 1px solid white;
+
+}
+
 .header-font {
   font-family: 'Poppins', sans-serif;
 }

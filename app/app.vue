@@ -15,7 +15,7 @@ import { SpeedInsights } from '@vercel/speed-insights/nuxt';
 <style>
 button {
   width: 100%;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   padding: 1rem;
 }
 
