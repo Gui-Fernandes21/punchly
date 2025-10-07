@@ -5,7 +5,7 @@ const { isDarkTheme } = useLayout();
 
 const stats = ref(null);
 const features = ref(null);
-const pricing = ref(null);
+const FAQ = ref(null);
 
 useHead({
   title: 'Punchly - Digital Loyalty Cards Made Simple',
@@ -110,14 +110,14 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                   <li>
                     <a
                       class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
-                      @click="scrollTo(pricing)"
+                      @click="scrollTo(FAQ)"
                       v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
-                      >PRICING</a
+                      >FAQ</a
                     >
                   </li>
-                  <li>
+                  <!-- <li>
                     <a class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300" @click="navigateToLogin">SIGN IN</a>
-                  </li>
+                  </li> -->
                 </ul>
               </div>
             </Transition>
@@ -130,7 +130,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <span class="header-font font-bold text-5xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
             <p class="text-font text-xl lg:text-2xl mb-8 leading-normal text-muted-color">We’re building the easiest loyalty card platform for small businesses. Be the first to get early access.</p>
             <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
-              <Button label="Join the Pre-Launch Waitlist" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-auto text-white"></Button>
+              <Button label="Join the Pre-Launch" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-auto text-white"></Button>
             </div>
           </div>
           <div class="flex-1">
@@ -148,7 +148,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                 <Icon name="material-symbols:store" class="text-white text-4xl" />
               </div>
               <div class="text-xl text-muted-color mb-4">Step 1</div>
-              <h3 class="mt-0 mb-4 font-bold text-4xl">Create Your Store</h3>
+              <h3 class="mt-0 mb-4 font-bold text-4xl">Create Your Loyalty Card</h3>
               <p class="leading-normal mb-8 text-muted-color">Set up your business profile and customize your loyalty card design in <strong>minutes</strong>.</p>
               <!-- <Button icon="pi pi-arrow-right" label="Get Started" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
               <div class="mt-8 xl:pt-8 flex justify-center">
@@ -158,7 +158,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             <div class="flex flex-col md:flex-row xl:flex-col gap-8">
               <div class="flex-1 bg-zinc-50 flex flex-col xl:flex-row xl:items-center justify-between py-7 px-5 shadow gap-8" style="border-radius: 14px">
                 <div class="flex-1 text-center xl:text-right">
-                  <img alt="intro image" src="/svg/landing/share-qr.svg" class="w-[75%]" />
+                  <img alt="intro image" src="/svg/landing/share-qr.svg" class="w-[60%] mx-auto" />
                 </div>
                 <div class="text-center xl:text-right flex-1">
                   <div class="text-xl text-muted-color mb-4">Step 2</div>
@@ -175,7 +175,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                   <!-- <Button icon="pi pi-arrow-right" label="See Rewards" class="p-button-text" iconPos="right" style="color: #14abb7"></Button> -->
                 </div>
                 <div class="flex-1 text-center xl:text-right">
-                  <img alt="intro image" src="/svg/landing/reward-customers.svg" class="w-[80%]" />
+                  <img alt="intro image" src="/svg/landing/reward-customers.svg" class="w-[80%] mx-auto" />
                 </div>
               </div>
             </div>
@@ -238,12 +238,12 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           <Button label="Join the waitlist" @click="openWaitlistModal" class="text-lg px-6 py-3 w-full xl:w-auto !mt-6" />
         </div>
       </div>
-      <div ref="pricing" class="px-8 sm:px-20 py-20 bg-zinc-50">
+      <div ref="FAQ" class="px-8 sm:px-20 py-20 bg-zinc-50">
         <div class="text-center mb-16">
           <h2 class="font-bold text-5xl lg:text-6xl mb-4">FAQ</h2>
         </div>
-        <div class="flex flex-col lg:flex-row justify-center gap-8">
-          <Accordion value="0">
+        <div class="flex flex-col lg:flex-row justify-center gap-8 w-full">
+          <Accordion value="0" class="w-full lg:w-2/3">
             <AccordionPanel value="0">
               <AccordionHeader>When does the beta start?</AccordionHeader>
               <AccordionContent>
@@ -338,7 +338,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
       </div>
     </div>
   </div>
-  <PrelaunchWaitListModal v-model="waitlistModal" @success="handleSuccess"/>
+  <PrelaunchWaitListModal v-model="waitlistModal" @success="handleSuccess" />
   <PrelaunchSuccessModal v-model="successModal" />
 </template>
 
