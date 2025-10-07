@@ -135,7 +135,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               <div
                 id="landing-menu"
                 v-show="openHamburger"
-                class="lg:block absolute right-0 top-auto lg:static z-10 shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0"
+                class="lg:block absolute right-0 top-auto lg:static shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0"
                 style="border-radius: 14px"
               >
                 <ul class="flex flex-col lg:flex-row m-0 p-0 list-none text-xl lg:text-base">
@@ -176,8 +176,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
         <div class="flex flex-col lg:flex-row gap-8 items-center justify-between px-8 py-10 xl:py-20 overflow-hidden">
           <div class="flex-1 animate-fadein animate-duration-1000">
             <span class="inline-flex items-center rounded-full bg-cyan-50 text-cyan-700 ring-1 ring-cyan-200 px-3 py-1 mb-4 text-xs font-medium">Pre‑Launch</span>
-            <span class="header-font font-bold text-5xl lg:text-7xl mt-2 mb-4 block">Digital Loyalty Cards</span>
-            <span class="header-font font-bold text-5xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</span>
+            <h1 class="header-font font-bold text-5xl lg:text-7xl mt-2 mb-4 block">Digital Loyalty Cards</h1>
+            <h2 class="header-font font-bold text-5xl lg:text-7xl mt-0 mb-8 block" style="color: #14abb7">Made Simple</h2>
             <p class="text-font text-xl lg:text-2xl mb-8 leading-normal text-muted-color">We’re building the easiest loyalty card platform for small businesses. Be the first to get early access.</p>
             <div class="flex gap-4 flex-wrap justify-center lg:justify-start items-center lg:items-start">
               <Button label="Join the Pre-Launch" @click="openWaitlistModal" style="background-color: #14abb7; border-color: #14abb7" class="xl:w-auto text-white"></Button>
