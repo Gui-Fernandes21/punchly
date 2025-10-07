@@ -1,24 +1,48 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+import { z } from 'zod';
 
 const { isDarkTheme } = useLayout();
 
 const stats = ref(null);
 const features = ref(null);
 const FAQ = ref(null);
+const contact = ref(null);
 
 useHead({
   title: 'Punchly - Digital Loyalty Cards Made Simple',
   meta: [{ name: 'description', content: 'Transform your business with digital loyalty cards. Punchly helps businesses create, manage, and track customer loyalty programs with ease.' }]
 });
 
+defineOgImageComponent('Landing', {
+  title: 'Punchly - Digital Loyalty Cards Made Simple',
+  description: 'Transform your business with digital loyalty cards. Punchly helps businesses create, manage, and track customer loyalty programs with ease.',
+  image: '/images/og-image.png'
+});
+
 definePageMeta({
   layout: 'full-page'
 });
 
+const toast = useToast();
+
 const waitlistModal = ref(false);
 const successModal = ref(false);
 const openHamburger = ref(false);
+
+const initialValues = ref({
+  message: '',
+  email: '',
+  name: ''
+});
+
+const backgroundStyle = computed(() => {
+  let path = '/svg/landing/';
+  let image = isDarkTheme.value ? 'line-effect-dark.svg' : 'line-effect.svg';
+
+  return { 'background-image': `url(${path + image})` };
+});
 
 function toggle() {
   openHamburger.value = !openHamburger.value;
@@ -47,17 +71,41 @@ function navigateToDashboard() {
   navigateTo('/');
 }
 
-const backgroundStyle = computed(() => {
-  let path = '/svg/landing/';
-  let image = isDarkTheme.value ? 'line-effect-dark.svg' : 'line-effect.svg';
-
-  return { 'background-image': `url(${path + image})` };
-});
-
 function scrollTo(element: HTMLElement | null) {
   setTimeout(() => {
     element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   }, 200);
+}
+
+const resolver = ref(
+  zodResolver(
+    z.object({
+      message: z.string().min(1, { message: 'Message is required.' }),
+      email: z.string().email({ message: 'Email is invalid.' }),
+      name: z.string().min(1, { message: 'Name is required.' })
+    })
+  )
+);
+
+function onFormSubmit({ valid }: { valid: boolean }) {
+  console.log('test');
+  if (!valid) {
+    toast.add({ severity: 'error', summary: 'Form is invalid.', life: 3000 });
+    return;
+  }
+
+  const { error } = useFetch('https://formspree.io/f/xkgqvroe', {
+    method: 'POST',
+    body: initialValues.value
+  });
+
+  if (error.value) {
+    return toast.add({ severity: 'error', summary: 'Error sending message.', life: 3000 });
+  }
+
+  toast.add({ severity: 'success', summary: 'Message sent successfully!', life: 3000 });
+
+  initialValues.value = { message: '', email: '', name: '' };
 }
 
 function handleSuccess() {
@@ -108,11 +156,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                     >
                   </li>
                   <li>
-                    <a
-                      class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
-                      @click="scrollTo(FAQ)"
-                      v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                    <a class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300" @click="scrollTo(FAQ)" v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
                       >FAQ</a
+                    >
+                  </li>
+                  <li>
+                    <a class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300" @click="scrollTo(contact)" v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                      >Contact Us</a
                     >
                   </li>
                   <!-- <li>
@@ -224,6 +274,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           </div>
         </div>
       </div>
+
       <div class="px-8 sm:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center justify-center">
         <div class="flex-1">
           <div class="text-4xl lg:text-5xl font-bold mb-4">Be an Early Adopter</div>
@@ -238,6 +289,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           <Button label="Join the waitlist" @click="openWaitlistModal" class="text-lg px-6 py-3 w-full xl:w-auto !mt-6" />
         </div>
       </div>
+
       <div ref="FAQ" class="px-8 sm:px-20 py-20 bg-zinc-50">
         <div class="text-center mb-16">
           <h2 class="font-bold text-5xl lg:text-6xl mb-4">FAQ</h2>
@@ -263,6 +315,37 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
               </AccordionContent>
             </AccordionPanel>
           </Accordion>
+        </div>
+      </div>
+
+      <div ref="contact" class="px-6 xl:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center justify-center">
+        <div class="text-center mb-16">
+          <h2 class="font-bold text-5xl lg:text-6xl mb-4">Contact Us</h2>
+        </div>
+        <div class="mx-auto flex flex-col lg:flex-row justify-center gap-8 w-[80%]">
+          <div class="hide-on-mobile">
+            <img src="/svg/landing/contact-open-letter.svg" alt="contact us" class="mb-8 mx-auto w-[85%]" />
+          </div>
+
+          <Form v-slot="$form" @submit="onFormSubmit" :initial-values="initialValues" :resolver="resolver" class="w-full xl:w-[60%]">
+            <h2 class="text-xl text-muted-color mb-8">Have questions or want to learn more? Reach out to our team—we're here to help!</h2>
+            <div class="field mb-4">
+              <label for="name" class="block text-left mb-2 font-medium">Name <span class="text-red-600">*</span></label>
+              <InputText id="name" name="name" type="text" class="w-full" v-model="initialValues.name" />
+              <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{ $form.name.error?.message }}</Message>
+            </div>
+            <div class="field mb-4">
+              <label for="email" class="block text-left mb-2 font-medium">Email <span class="text-red-600">*</span></label>
+              <InputText name="email" id="email" type="email" class="w-full" v-model="initialValues.email" />
+              <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{ $form.email.error?.message }}</Message>
+            </div>
+            <div class="field mb-4">
+              <label for="message" class="block text-left mb-2 font-medium">Message <span class="text-red-600">*</span></label>
+              <Textarea id="message" name="message" rows="5" class="w-full" v-model="initialValues.message"></Textarea>
+              <Message v-if="$form.message?.invalid" severity="error" size="small" variant="simple">{{ $form.message.error?.message }}</Message>
+            </div>
+            <Button type="submit" label="Send Message" class="w-full lg:w-auto" style="background-color: #14abb7; border-color: #14abb7; color: white" />
+          </Form>
         </div>
       </div>
 
@@ -340,6 +423,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
   </div>
   <PrelaunchWaitListModal v-model="waitlistModal" @success="handleSuccess" />
   <PrelaunchSuccessModal v-model="successModal" />
+  <Toast />
 </template>
 
 <style scoped>
@@ -352,6 +436,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
 @media (max-width: 1024px) {
   #features {
     grid-template-columns: 1fr;
+  }
+  .hide-on-mobile {
+    display: none;
   }
 }
 

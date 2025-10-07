@@ -1,9 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   css: ['~/assets/scss/styles.scss', '~/assets/css/tailwind.css', '~/assets/css/main.css'],
-  modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/fonts', '@nuxtjs/supabase', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', 'nuxt-qrcode', 'nuxt-aos'],
+  modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/fonts', '@nuxtjs/supabase', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', 'nuxt-qrcode', 'nuxt-aos', '@nuxtjs/seo'],
   app: {
     head: {
       title: 'Punchly - Loadless Payment Links for Small Businesses',
@@ -35,6 +35,19 @@ export default defineNuxtConfig({
     public: {
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000'
     }
+  },
+
+  site: {
+    name: 'Punchly',
+    title: 'Punchly - Digital Loyalty Cards Made Simple',
+    description: 'Transform your business with digital loyalty cards. Punchly helps businesses create, manage, and track customer loyalty programs with ease.',
+    url: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    image: '/images/logo/high-quality_punchly-logo.png'
+  },
+
+  robots: {
+    // In non-prod, block everything
+    disallow: process.env.NODE_ENV !== 'production' ? ['/*'] : ['/api/**', '/business/**', '/client/**', '/account/**', '/auth/**', '/__og-image__/**']
   },
 
   aos: {
