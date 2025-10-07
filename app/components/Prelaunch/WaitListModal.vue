@@ -36,13 +36,9 @@ const resolver = ref(
 );
 
 const handleSubmit = async () => {
-  // Handle form submission logic here
-  console.log('Email:', email.value);
-  console.log('Selected Option:', selectedOption.value);
-
   const supabase = useSupabaseClient<Database>();
 
-  const { data, error } = await supabase.from('prelaunch_email').insert([
+  const { error } = await supabase.from('prelaunch_email').insert([
     {
       email: email.value,
       name: bizName.value,
@@ -56,7 +52,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  console.log('Data inserted successfully:');
+  console.log('Data inserted successfully');
 
   visible.value = false;
   emit('success', true);
