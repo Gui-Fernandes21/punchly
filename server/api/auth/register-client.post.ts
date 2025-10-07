@@ -12,6 +12,10 @@ type ResponseType = {
 };
 
 export default defineEventHandler(async (event): Promise<ResponseType> => {
+  if (process.env.NODE_ENV === 'production') {
+    throw createError({ statusCode: 403, statusMessage: 'Not allowed in production' });
+  }
+
   const body = await readBody(event);
   const { email, type, code, redirectTo } = body;
 
@@ -24,8 +28,8 @@ export default defineEventHandler(async (event): Promise<ResponseType> => {
 
   const client = await serverSupabaseClient(event);
 
-  const { data, error } = await client.auth.verifyOtp({ token_hash: code, type });  
-   
+  const { data, error } = await client.auth.verifyOtp({ token_hash: code, type });
+
   if (error) {
     throw createError({ statusCode: 400, statusMessage: error.message });
   }
@@ -37,7 +41,7 @@ export default defineEventHandler(async (event): Promise<ResponseType> => {
   if (!userAuthId) throw createError({ statusCode: 400, statusMessage: 'User Auth ID is missing' });
 
   const userExist = await client.from('client').select('*').eq('auth_id', userAuthId).limit(1);
-  
+
   if (userExist.error && userExist.error.code !== 'PGRST116') {
     throw createError({ statusCode: 400, statusMessage: userExist.error.message });
   }
