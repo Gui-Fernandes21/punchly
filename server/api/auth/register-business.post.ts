@@ -2,6 +2,10 @@ import { defineEventHandler, readBody, createError } from 'h3';
 import { serverSupabaseServiceRole, serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler(async (event): Promise<any> => {
+  if (process.env.NODE_ENV === 'production') {
+    return createError({ statusCode: 403, statusMessage: 'Not allowed in production' });
+  }
+  
   const body = await readBody(event);
   const { email, password } = body;
 

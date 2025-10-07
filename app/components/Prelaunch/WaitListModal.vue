@@ -1,23 +1,27 @@
 <script setup lang="ts">
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { z } from 'zod';
+import { useErrorModal } from '~/composables/ui/useErrorModal';
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
+  (e: 'success', value: boolean): void;
 }>();
 
 const props = defineProps<{
   modelValue: boolean;
 }>();
 
+const { showError } = useErrorModal();
+
 const visible = ref<boolean>(props.modelValue);
 
 const email = ref<string>('');
 const bizName = ref<string>('');
-const selectedOption = ref<string | null>(null);
+const selectedOption = ref<{ label: string; value: 'business' | 'customer' } | null>(null);
 
 const options = ref([
-  { label: 'Customer', value: 'personal' },
+  { label: 'Customer', value: 'customer' },
   { label: 'Business', value: 'business' }
 ]);
 
@@ -31,12 +35,27 @@ const resolver = ref(
   )
 );
 
-const handleSubmit = () => {
-  // Handle form submission logic here
-  console.log('Email:', email.value);
-  console.log('Selected Option:', selectedOption.value);
-  // Close the modal after submission
+const handleSubmit = async () => {
+  const supabase = useSupabaseClient<Database>();
+
+  const { error } = await supabase.from('prelaunch_email').insert([
+    {
+      email: email.value,
+      name: bizName.value,
+      role: selectedOption.value?.value || 'customer'
+    }
+  ]);
+
+  if (error) {
+    console.error('Error inserting data:', error);
+    showError({ message: 'An error occurred while submitting the form. Please try again later.' });
+    return;
+  }
+
+  console.log('Data inserted successfully');
+
   visible.value = false;
+  emit('success', true);
 };
 
 watch(
@@ -57,14 +76,14 @@ watch(
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" modal closable pt:root:class="relative !border-0 !w-[85%]" pt:mask:class="backdrop-blur-md">
+  <Dialog v-model:visible="visible" modal closable pt:root:class="relative !border-0 !w-[90%] rounded-2xl py-4 shadow-xl xl:max-w-[600px]" pt:mask:class="backdrop-blur-md">
     <template #header>
       <h1 class="text-2xl font-bold">Join the Waitlist</h1>
     </template>
 
     <section>
       <h3 class="text-lg text-gray-600">Be the first to know when we launch!</h3>
-      <Form v-slot="$form" @submit.prevent="handleSubmit" :resolver="resolver" class="flex flex-col gap-4 mt-8">
+      <Form v-slot="$form" @submit="handleSubmit" :resolver="resolver" class="flex flex-col gap-4 mt-8">
         <div class="form-group">
           <label for="bizName">Business Name:</label>
           <InputText name="bizName" type="text" v-model.trim="bizName" />
