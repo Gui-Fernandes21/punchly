@@ -18,7 +18,17 @@ useHead({
 useSeoMeta({
   title: 'Digital Loyalty Cards for Small Businesses',
   description: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
+  ogImage: {
+    url: 'https://punchly.co/__og-image__/image/og.png',
+    width: 1200,
+    height: 600,
+    alt: 'Punchly - Digital Loyalty Cards Made Simple'
+  },
+  twitterImage: {
+    url: 'https://punchly.co/__og-image__/image/og.png',
+    alt: 'Punchly - Digital Loyalty Cards Made Simple'
+  }
 });
 
 defineOgImageComponent('Landing', {
@@ -335,7 +345,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
         <div class="text-center mb-16">
           <h2 class="font-bold text-5xl lg:text-6xl mb-4">Contact Us</h2>
         </div>
-        <div class="mx-auto flex flex-col lg:flex-row justify-center gap-8 w-full xl:w-[80%] ">
+        <div class="mx-auto flex flex-col lg:flex-row justify-center gap-8 w-full xl:w-[80%]">
           <div class="hide-on-mobile">
             <img src="/svg/landing/contact-open-letter.svg" alt="contact us" class="mb-8 mx-auto xl:w-[85%]" />
           </div>
