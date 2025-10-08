@@ -24,14 +24,10 @@ useSeoMeta({
     width: 1200,
     height: 600,
     alt: 'Punchly - Digital Loyalty Cards Made Simple'
-  },
-  twitterImage: {
-    url: 'https://punchly.co/__og-image__/image/og.png',
-    alt: 'Punchly - Digital Loyalty Cards Made Simple'
   }
 });
 
-defineOgImageComponent('Landing', {
+defineOgImageComponent('NuxtSeo', {
   eyebrow: 'Introducing',
   title: 'Punchly - Digital Loyalty Cards Made Simple',
   subtitle: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
