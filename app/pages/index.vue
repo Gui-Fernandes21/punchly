@@ -15,6 +15,12 @@ useHead({
   meta: [{ name: 'description', content: 'Transform your business with digital loyalty cards. Punchly helps businesses create, manage, and track customer loyalty programs with ease.' }]
 });
 
+useSeoMeta({
+  title: 'Digital Loyalty Cards for Small Businesses',
+  description: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
+  twitterCard: 'summary_large_image'
+});
+
 defineOgImageComponent('Landing', {
   eyebrow: 'Introducing',
   title: 'Punchly - Digital Loyalty Cards Made Simple',
@@ -28,6 +34,8 @@ definePageMeta({
 });
 
 const toast = useToast();
+const route = useRoute();
+const config = useRuntimeConfig();
 
 const waitlistModal = ref(false);
 const successModal = ref(false);
@@ -39,12 +47,25 @@ const initialValues = ref({
   name: ''
 });
 
+const text = 'Replace paper punch cards with QR-based rewards.';
+const e = (s: string) => encodeURIComponent(s);
+
 const backgroundStyle = computed(() => {
   let path = '/svg/landing/';
   let image = isDarkTheme.value ? 'line-effect-dark.svg' : 'line-effect.svg';
 
   return { 'background-image': `url(${path + image})` };
 });
+
+const url = computed(() => new URL(route.fullPath, config.public.appUrl).toString());
+
+// Common share links
+const links = computed(() => ({
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${e(url.value)}`,
+  x: `https://twitter.com/intent/tweet?url=${e(url.value)}&text=${e(text)}`,
+  whatsapp: `https://wa.me/?text=${e(text)}%20${e(url.value)}`,
+  facebook: `https://www.facebook.com/sharer/sharer.php?u=${e(url.value)}`
+}));
 
 function toggle() {
   openHamburger.value = !openHamburger.value;
@@ -55,14 +76,6 @@ function onDocClick(e: MouseEvent) {
   const m = document.getElementById('landing-menu');
   const b = document.getElementById('landing-trigger');
   if (m && b && !m.contains(e.target as Node) && !b.contains(e.target as Node)) openHamburger.value = false;
-}
-
-function navigateToLogin() {
-  navigateTo('business/login');
-}
-
-function navigateToRegister() {
-  navigateTo('business/register');
 }
 
 function openWaitlistModal() {
@@ -134,12 +147,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
             </Button>
 
             <Transition enter-from-class="opacity-0 scale-95" enter-active-class="transition duration-150 ease-out transform" leave-to-class="opacity-0 scale-95" leave-active-class="transition duration-100 ease-in transform">
-              <div
-                id="landing-menu"
-                v-show="openHamburger"
-                class="lg:block absolute right-0 top-auto lg:static shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0"
-                style="border-radius: 14px"
-              >
+              <div id="landing-menu" v-show="openHamburger" class="lg:block absolute right-0 top-auto lg:static shadow lg:shadow-none w-60 lg:w-auto bg-slate-50 lg:bg-slate-50 dark:lg:bg-slate-950 origin-top p-4 lg:p-0" style="border-radius: 14px">
                 <ul class="flex flex-col lg:flex-row m-0 p-0 list-none text-xl lg:text-base">
                   <li>
                     <a
@@ -163,7 +171,10 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
                     >
                   </li>
                   <li>
-                    <a class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300" @click="scrollTo(contact)" v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
+                    <a
+                      class="block p-4 cursor-pointer text-muted-color hover:text-color transition-colors duration-300"
+                      @click="scrollTo(contact)"
+                      v-styleclass="{ selector: '#landing-menu', leaveActiveClass: 'animate-fadeout', leaveToClass: 'hidden' }"
                       >Contact Us</a
                     >
                   </li>
@@ -320,13 +331,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
         </div>
       </div>
 
-      <div ref="contact" class="px-6 xl:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center justify-center">
+      <div ref="contact" class="px-8 xl:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center justify-center">
         <div class="text-center mb-16">
           <h2 class="font-bold text-5xl lg:text-6xl mb-4">Contact Us</h2>
         </div>
-        <div class="mx-auto flex flex-col lg:flex-row justify-center gap-8 w-[80%]">
+        <div class="mx-auto flex flex-col lg:flex-row justify-center gap-8 w-full xl:w-[80%] ">
           <div class="hide-on-mobile">
-            <img src="/svg/landing/contact-open-letter.svg" alt="contact us" class="mb-8 mx-auto w-[85%]" />
+            <img src="/svg/landing/contact-open-letter.svg" alt="contact us" class="mb-8 mx-auto xl:w-[85%]" />
           </div>
 
           <Form v-slot="$form" @submit="onFormSubmit" :initial-values="initialValues" :resolver="resolver" class="w-full xl:w-[60%]">
@@ -400,15 +411,18 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           </ul>
         </div> -->
         <div class="flex-1">
-          <div class="text-xl text-gray-400 mb-6">CONNECT</div>
+          <div class="text-xl text-gray-400 mb-6">SHARE US ON</div>
           <div class="flex gap-4 mb-6">
-            <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
-              <Icon name="material-symbols:mail-outline" class="text-white text-xl" />
+            <a :href="links.whatsapp" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
+              <Icon name="ic:baseline-whatsapp" class="text-white text-3xl" />
             </a>
-            <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
+            <a :href="links.x" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
               <i class="pi pi-twitter text-white text-xl"></i>
             </a>
-            <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
+            <a :href="links.facebook" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
+              <Icon name="ic:baseline-facebook" class="text-white text-3xl" />
+            </a>
+            <a :href="links.linkedin" class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #14abb7">
               <i class="pi pi-linkedin text-white text-xl"></i>
             </a>
           </div>

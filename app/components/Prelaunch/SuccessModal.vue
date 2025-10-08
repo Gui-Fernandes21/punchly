@@ -62,20 +62,13 @@ watch(
       </div>
 
       <!-- Social Sharing Encouragement -->
-      <!-- <div class="border-t border-gray-200 pt-6">
+      <div class="border-t border-gray-200 pt-6">
         <p class="text-gray-600 mb-4">Help us spread the word! Share Punchly with other business owners who could benefit from digital loyalty programs.</p>
 
         <div class="flex gap-3 justify-center mb-6">
-          <Button severity="secondary" outlined size="small" class="flex-1 max-w-32">
-            <Icon name="material-symbols:share" class="mr-2" />
-            Share
-          </Button>
-          <Button severity="secondary" outlined size="small" class="flex-1 max-w-32">
-            <Icon name="material-symbols:mail-outline" class="mr-2" />
-            Invite
-          </Button>
+          <UIShareButton />
         </div>
-      </div> -->
+      </div>
 
       <!-- Thank You Message -->
       <p class="text-sm text-gray-500 leading-relaxed">Thank you for believing in our vision to make loyalty programs simple and effective for every business. We can't wait to show you what we've been building!</p>
