@@ -27,12 +27,15 @@ useSeoMeta({
   }
 });
 
-defineOgImageComponent('Landing', {
-  eyebrow: 'Introducing',
-  title: 'Punchly - Digital Loyalty Cards Made Simple',
-  subtitle: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
-  badge: 'MVP',
-  url: 'punchly.co'
+defineOgImage({
+  component: 'Landing',
+  props: {
+    eyebrow: 'Introducing',
+    title: 'Punchly - Digital Loyalty Cards Made Simple',
+    subtitle: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
+    badge: 'MVP',
+    url: 'punchly.co'
+  }
 });
 
 definePageMeta({

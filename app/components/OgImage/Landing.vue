@@ -10,7 +10,7 @@ const props = defineProps<Props>();
 
 // Build an absolute URL for the logo so Satori can fetch it reliably
 const { origin } = useRequestURL();
-const logoSrc = new URL('/images/logo/punchly-logo.png', origin).href;
+const logoSrc = new URL('/images/logo/high-quality_punchly-logo.png', origin).href;
 </script>
 
 <template>
@@ -47,7 +47,7 @@ const logoSrc = new URL('/images/logo/punchly-logo.png', origin).href;
     <!-- top brand row -->
     <div style="display: flex; align-items: center; justify-content: center; gap: 16px; z-index: 2; position: relative">
       <div style="width: 77px; height: 77px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)">
-        <img :src="logoSrc" alt="Punchly Logo" width="68" height="68" style="display: block; margin: 0; border-radius: 8px" />
+        <img :src="logoSrc" alt="Punchly Logo" width="68" height="68" style="display: block; margin-top: 5px; border-radius: 8px" />
       </div>
 
       <div style="font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-weight: 800; font-size: 28px; letter-spacing: 0.02em; color: #ffffff">Punchly</div>

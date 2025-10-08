@@ -58,7 +58,7 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    defaults: { component: 'OgImage/Landing' }
+    defaults: { component: 'Landing' }
   },
 
   aos: {
