@@ -23,10 +23,6 @@ export default defineNuxtConfig({
       }
     },
     redirect: false,
-    redirectOptions: {
-      login: '/business/login',
-      callback: '/business/dashboard'
-    },
     url: process.env.NUXT_PUBLIC_SUPABASE_URL,
     key: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY,
     serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -47,7 +43,7 @@ export default defineNuxtConfig({
 
   robots: {
     // In non-prod, block everything
-    disallow: process.env.NODE_ENV !== 'production' ? ['/*'] : ['/api/**', '/business/**', '/client/**', '/account/**', '/auth/**', '/__og-image__/**']
+    disallow: process.env.NODE_ENV !== 'production' ? ['/*'] : ['/api/**', '/business/**', '/client/**', '/account/**', '/auth/**']
   },
 
   aos: {
