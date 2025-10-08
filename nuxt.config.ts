@@ -46,6 +46,15 @@ export default defineNuxtConfig({
     disallow: process.env.NODE_ENV !== 'production' ? ['/*'] : ['/api/**', '/business/**', '/client/**', '/account/**', '/auth/**']
   },
 
+  ogImage: {
+    defaults: { component: 'OgImage/Landing' },
+    fonts: [
+      { name: 'Inter', weight: 500, path: '/fonts/Inter-Medium.ttf' },
+      { name: 'Inter', weight: 700, path: '/fonts/Inter-Bold.ttf' },
+      { name: 'Inter', weight: 900, path: '/fonts/Inter-Black.ttf' }
+    ]
+  },
+
   aos: {
     // Global settings:
     disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
