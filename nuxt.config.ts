@@ -47,12 +47,7 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    defaults: { component: 'OgImage/Landing' },
-    fonts: [
-      { name: 'Inter', weight: 500, path: '/fonts/Inter-Medium.ttf' },
-      { name: 'Inter', weight: 700, path: '/fonts/Inter-Bold.ttf' },
-      { name: 'Inter', weight: 900, path: '/fonts/Inter-Black.ttf' }
-    ]
+    defaults: { component: 'OgImage/Landing' }
   },
 
   aos: {
