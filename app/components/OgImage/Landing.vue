@@ -14,15 +14,15 @@ defineProps<Props>();
   <div
     style="
       width: 1200px;
-      height: 630px;
+      height: 600px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 64px;
+      padding: 32px 64px;
       color: #fff;
-      background: radial-gradient(1200px 630px at -10% -30%, #126a74 0%, rgba(20, 171, 183, 0.4) 30%, rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, #0f3440 0%, #14abb7 70%);
+      background: radial-gradient(1200px 600px at -10% -30%, #126a74 0%, rgba(20, 171, 183, 0.4) 30%, rgba(0, 0, 0, 0) 60%), linear-gradient(135deg, #0f3440 0%, #14abb7 70%);
     "
   >
     <!-- subtle texture -->
@@ -41,7 +41,7 @@ defineProps<Props>();
         </svg> -->
       </div>
 
-      <div style="font-family: Inter, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial; font-weight: 800; font-size: 28px; letter-spacing: 0.4px">Punchly</div>
+      <div style="font-family: Poppins, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial; font-weight: 800; font-size: 28px; letter-spacing: 0.4px">Punchly</div>
 
       <div v-if="badge" style="margin-left: 12px; font-family: Inter, ui-sans-serif; font-weight: 700; font-size: 18px; padding: 6px 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28)">
         {{ badge }}
@@ -54,7 +54,7 @@ defineProps<Props>();
         {{ eyebrow }}
       </div>
 
-      <h1 style="margin: 0; font-family: Inter, ui-sans-serif; font-weight: 900; font-size: 72px; line-height: 1.05; letter-spacing: -0.5px; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25)">
+      <h1 style="margin: 0; font-family: Inter, ui-sans-serif; font-weight: 900; font-size: 62px; line-height: 1.05; letter-spacing: -0.5px; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25)">
         {{ title }}
       </h1>
 
@@ -69,10 +69,10 @@ defineProps<Props>();
         {{ url || 'punchly.co' }}
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px">
+      <!-- <div style="display: flex; align-items: center; gap: 12px">
         <div style="width: 10px; height: 10px; border-radius: 9999px; background: #ffffff"></div>
         <div style="font-family: Inter, ui-sans-serif; font-weight: 600; font-size: 24px; opacity: 0.92">QR-based customer loyalty</div>
-      </div>
+      </div> -->
     </div>
 
     <!-- decorative rings -->

@@ -16,9 +16,11 @@ useHead({
 });
 
 defineOgImageComponent('Landing', {
+  eyebrow: 'Introducing',
   title: 'Punchly - Digital Loyalty Cards Made Simple',
-  description: 'Transform your business with digital loyalty cards. Punchly helps businesses create, manage, and track customer loyalty programs with ease.',
-  image: '/images/og-image.png'
+  subtitle: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
+  badge: 'MVP',
+  url: 'punchly.co'
 });
 
 definePageMeta({
