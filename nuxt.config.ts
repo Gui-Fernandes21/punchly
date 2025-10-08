@@ -3,7 +3,18 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/scss/styles.scss', '~/assets/css/tailwind.css', '~/assets/css/main.css'],
-  modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxt/fonts', '@nuxtjs/supabase', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', 'nuxt-qrcode', 'nuxt-aos', '@nuxtjs/seo'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/icon',
+    '@nuxt/fonts',
+    '@nuxtjs/supabase',
+    '@primevue/nuxt-module',
+    '@nuxtjs/tailwindcss',
+    'nuxt-qrcode',
+    'nuxt-aos',
+    '@nuxtjs/seo',
+    'nuxt-og-image'
+  ],
   app: {
     head: {
       title: 'Punchly - Loadless Payment Links for Small Businesses',

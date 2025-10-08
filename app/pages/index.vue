@@ -27,7 +27,7 @@ useSeoMeta({
   }
 });
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImageComponent('Landing', {
   eyebrow: 'Introducing',
   title: 'Punchly - Digital Loyalty Cards Made Simple',
   subtitle: 'Replace paper punch cards with QR rewards. Scan, stamp, redeem.',
