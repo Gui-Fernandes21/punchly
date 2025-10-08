@@ -85,7 +85,7 @@ watch(
       <h3 class="text-lg text-gray-600">Be the first to know when we launch!</h3>
       <Form v-slot="$form" @submit="handleSubmit" :resolver="resolver" class="flex flex-col gap-4 mt-8">
         <div class="form-group">
-          <label for="bizName">Business Name:</label>
+          <label for="bizName">Name:</label>
           <InputText name="bizName" type="text" v-model.trim="bizName" />
           <Message v-if="$form.bizName?.invalid" severity="error" size="small" variant="simple">{{ $form.bizName.error?.message }}</Message>
         </div>
