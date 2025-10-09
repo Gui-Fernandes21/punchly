@@ -45,7 +45,7 @@ const logoSrc = new URL('/images/logo/high-quality_punchly-logo.png', origin).hr
     ></div>
 
     <!-- top brand row -->
-    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; z-index: 2; position: relative">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; z-index: 2; position: relative">
       <div style="width: 77px; height: 77px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)">
         <img :src="logoSrc" alt="Punchly Logo" width="68" height="68" style="display: block; margin-top: 5px; border-radius: 8px" />
       </div>

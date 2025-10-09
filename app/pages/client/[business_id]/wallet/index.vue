@@ -80,6 +80,10 @@ const logout = async () => {
   window.location.href = '/client/login';
 };
 
+const goToDashboard = () => {
+  window.location.href = '/client/dashboard';
+};
+
 const items = ref([
   {
     label: 'Dashboard',
@@ -128,12 +132,12 @@ const items = ref([
         </div> -->
       </header>
 
-      <section class="card_main-content">
+      <section class="card_main-content"> 
         <UIWallet mode="full" :card-data="cardData" />
         <div class="actions">
-          <Button class="primary" :style="{ backgroundColor: business?.primary_color || '#14ABB7' }" @click="openQrModal"> <Icon name="material-symbols:qr-code" size="1.5rem"/> Present QR Code</Button>
+          <Button class="primary mb-2" :style="{ backgroundColor: business?.primary_color || '#14ABB7' }" @click="openQrModal"> <Icon name="material-symbols:qr-code" size="1.5rem"/> Present QR Code</Button>
           <div class="secondary flex gap-2 ">
-            <Button severity="secondary" @click="navigateTo('client/dashboard')">See All Cards</Button>
+            <Button severity="secondary" @click="goToDashboard">See All Cards</Button>
             <Button severity="secondary" outlined @click="logout">Logout</Button>
           </div>
         </div>
