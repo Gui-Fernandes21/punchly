@@ -62,7 +62,7 @@ const business = useState<Tables<'business'> | null>('business_data');
 <template>
   <ul class="layout-menu">
     <div class="menus">
-      <h1 class="text-center text-2xl font-bold text-stone-200 mt-4 mb-12">{{ business?.name }}</h1>
+      <h1 class="text-center text-2xl font-bold text-stone-200 mt-4 mb-12 hide-on-desktop">{{ business?.name }}</h1>
       <template v-for="(item, i) in model" :key="item">
         <AppMenuItem :item="item" root :index="i" />
   

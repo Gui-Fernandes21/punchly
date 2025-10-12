@@ -173,22 +173,7 @@ const handleLogout = async () => {
 
   font-size: 1.1rem;
 }
-.restaurant-logo {
-  position: absolute;
-  left: calc(50% - 3.5rem);
-  top: calc(50% - 1.5rem);
-  width: 6rem;
-  height: 6rem;
-  border-radius: 5px;
-  object-fit: cover;
-  margin-right: 10px;
 
-  border-color: rgb(240, 240, 240);
-  border-width: 0.16rem;
-  border-style: solid;
-
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-}
 .topbar-profile {
   background: #fff;
   border-radius: 50%;
@@ -198,5 +183,12 @@ const handleLogout = async () => {
 .topbar-profile-button {
   width: 100%;
   padding: 0 !important;
+}
+
+@media (min-width: 1024px) {
+  .layout-topbar {
+    height: 6rem;
+    padding-left: 0;
+  }
 }
 </style>

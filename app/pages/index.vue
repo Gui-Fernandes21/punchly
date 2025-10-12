@@ -462,9 +462,6 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
   #features {
     grid-template-columns: 1fr;
   }
-  .hide-on-mobile {
-    display: none;
-  }
 }
 
 .btn-hover {

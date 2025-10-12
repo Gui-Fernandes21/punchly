@@ -45,4 +45,13 @@ const containerClass = computed(() => {
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+@media (min-width: 1024px) {
+  .layout-content-wrapper {
+    padding-top: 6rem;
+  }
+  .layout-content{
+    padding-top: 0;
+  }
+}
+</style>
