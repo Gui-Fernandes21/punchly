@@ -289,13 +289,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick));
           </div>
           <div>
             <div class="p-6 flex items-center justify-center mb-8" style="border-radius: 14px; border-bottom-right-radius: 5rem; background: #14abb7aa">
-              <Icon name="material-symbols:security" class="text-white text-[6rem] lg:text-8xl" />
+              <Icon name="tabler:brand-google-analytics" class="text-white text-[6rem] lg:text-8xl" />
             </div>
-            <h3 class="header-font mt-0 mb-4 font-bold text-4xl">Secure & Reliable</h3>
-            <p class="leading-normal text-muted-color">Enterprise-grade security ensures customer data is protected.</p>
+            <h3 class="header-font mt-0 mb-4 font-bold text-4xl">Analytics</h3>
+            <p class="leading-normal text-muted-color">Gain insights into customer behavior and program performance with real-time analytics.</p>
           </div>
         </div>
-      </div>
+      </div> 
 
       <div class="px-8 sm:px-20 py-20 bg-surface-50 dark:bg-surface-950 xl:flex xl:items-start xl:justify-start flex-wrap gap-8 items-center justify-center">
         <div class="flex-1">
